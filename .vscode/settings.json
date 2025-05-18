@@ -1,0 +1,42 @@
+{
+    /* ---- Editor ---- */
+    "editor.trimAutoWhitespace": true,
+    /* ---- Programming Languages ---- */
+    // Python
+    "[python]": {
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.defaultColorDecorators": "always",
+        "editor.defaultFormatter": "eeyore.yapf",
+        "editor.formatOnSaveMode": "file",
+        "editor.formatOnSave": true,
+        "editor.formatOnType": false,
+        "editor.wordBasedSuggestions": "off"
+    },
+    "python.defaultInterpreterPath": "/home/ahellwig/source/repos/github.com/ashellwig/rhapi/venv/bin/python",
+    //// Linting
+    "pylint.enabled": true,
+    "pylint.args": ["--rcfile=pyproject.toml"],
+    //// Formatting
+    "yapf.path": [],
+    "yapf.args": [
+        "--style",
+        "pyproject.toml"
+    ],
+    /* ---- Misc. ---- */
+    // Docstrings
+    "autoDocstring.docstringFormat": "google",
+    // GitHub CoPilot
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+    // Licencing
+    "license.author": "Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)",
+    "license.filename": "LICENSE",
+    "license.year": "2025",
+    "licenser.author": "Ash Hellwig <ahellwig.dev@gmail.com>",
+    "licenser.projectName": "jobappfiller",
+    "licenser.license": "AGPLv3"
+}
