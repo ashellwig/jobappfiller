@@ -28,7 +28,7 @@ authors = [
 description = "Automatically fill in experience for online job applications."
 version = "0.0.1"
 readme = "README.md"
-requires-python = ">= 3.13"
+requires-python = ">= 3.12"
 keywords = ["selenium", "browser", "cli"]
 license = "MIT"
 dependencies = [
@@ -41,7 +41,7 @@ dependencies = [
 ]
 
 [project.scripts]
-rhapi = "jobappfiller.cli:cli"
+jobappfiller = "jobappfiller.cli:cli"
 
 # ---- CONFIGURATION: pydocstyle ----
 [tool.pydocstyle]
