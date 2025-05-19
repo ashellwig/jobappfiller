@@ -28,13 +28,13 @@ authors = [
 description = "Automatically fill in experience for online job applications."
 version = "0.0.1"
 readme = "README.md"
-requires-python = ">= 3.12"
+requires-python = ">= 3.13"
 keywords = ["selenium", "browser", "cli"]
-license = "MIT"
+license = {file = "LICENSE"}
 dependencies = [
-    "click==8.1.8",
+    "click==8.2.0",
     "pydocstyle==6.3.0",
-    "pylint==3.3.6",
+    "pylint==3.3.7",
     "pytest==8.3.5",
     "python-dotenv==1.1.0",
     "yapf==0.43.0"

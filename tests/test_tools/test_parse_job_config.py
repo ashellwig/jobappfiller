@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
+# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -13,17 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import click
-
-from jobappfiller.tools.cli import cli_add_one
+from jobappfiller.tools.parse_job_config import add_one
 
 
-@click.group()
-def cli():
-    pass
-
-
-cli.add_command(cli_add_one, name='add-one')
-
-if __name__ == '__main__':
-    cli()
+def test_add_one():
+    assert add_one(number=1) == 2

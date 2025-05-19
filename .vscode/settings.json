@@ -10,9 +10,10 @@
         "editor.formatOnSaveMode": "file",
         "editor.formatOnSave": true,
         "editor.formatOnType": false,
-        "editor.wordBasedSuggestions": "off"
+        "editor.wordBasedSuggestions": "off",
+        "editor.tabSize": 4
     },
-    "python.defaultInterpreterPath": "/home/ahellwig/source/repos/github.com/ashellwig/rhapi/venv/bin/python",
+    "python.defaultInterpreterPath": "/home/ahellwig/source/repos/github.com/ashellwig/jobappfiller/.venv/bin/python",
     //// Linting
     "pylint.enabled": true,
     "pylint.args": ["--rcfile=pyproject.toml"],
@@ -34,9 +35,12 @@
     },
     // Licencing
     "license.author": "Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)",
+    "license.default": "AGPLv3",
+    "license.extension": "",
     "license.filename": "LICENSE",
-    "license.year": "2025",
-    "licenser.author": "Ash Hellwig <ahellwig.dev@gmail.com>",
+    "licenser.author": "Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)",
+    "licenser.license": "AGPLv3",
     "licenser.projectName": "jobappfiller",
-    "licenser.license": "AGPLv3"
+    "license.year": "2025",
+    "licenser.useSPDXLicenseFormat": false
 }
