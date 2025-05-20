@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
+# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -13,18 +13,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import click
+[[default]]
+name = "Default"
 
-from jobappfiller.tools.cli import cli_add_one, cli_parse_resume
-
-
-@click.group()
-def cli():
-    pass
-
-
-cli.add_command(cli_add_one, name='add-one')
-cli.add_command(cli_parse_resume, name='parse-resume')
-
-if __name__ == '__main__':
-    cli()
+[[default.experience]]
+name = ""
+location = ""
+startdate = "" # Use MM/DD/YYYY format.
+enddate = ""  # Use MM/DD/YYYY format.
+jobtitle = ""
+description = """\
+    Begin job description here.\
+    """

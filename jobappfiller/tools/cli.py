@@ -14,8 +14,30 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import click
+import json
+from rich import print_json
 
-from jobappfiller.tools.parse_job_config import add_one
+from jobappfiller.tools.parse_job_config import add_one, parse_resume
+
+
+class DatetimeEncoder(json.JSONEncoder):
+
+    def default(self, o):
+        try:
+            return super().default(o)
+        except TypeError:
+            return str(o)
+
+
+@click.command()
+@click.option('-f', '--file', type=str)
+def cli_parse_resume(file: str):
+    parsed_dictionary: dict = parse_resume(resume_config_file=file)
+    parsed_dictionary_json: str = json.dumps(
+            parsed_dictionary,
+            cls=DatetimeEncoder
+    )
+    print_json(parsed_dictionary_json)
 
 
 @click.command()

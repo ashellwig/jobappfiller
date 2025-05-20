@@ -14,9 +14,26 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """Parses job resume configuration file."""
 
+import tomllib
+
 from jobappfiller.util.logger import setup_logger
 
 logger = setup_logger(log_file="jobappfiller.log")
+
+
+def parse_resume(resume_config_file: str) -> dict:
+    """Reads the resume configuration file into a dictionary.
+
+    Args:
+        resume_config_file (str): Path to configuration file as a string.
+
+    Returns:
+        dict: Dictionary containing the contents of the resume configuration.
+    """
+    with open(resume_config_file, "rb") as f:
+        data: dict = tomllib.load(f)
+
+    return data
 
 
 def add_one(number: int) -> int:
