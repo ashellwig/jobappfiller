@@ -18,7 +18,7 @@ import tomllib
 
 from jobappfiller.util.logger import setup_logger
 
-logger = setup_logger(log_file="jobappfiller.log")
+logger = setup_logger(log_file=None)
 
 
 def parse_resume(resume_config_file: str) -> dict:
@@ -34,6 +34,15 @@ def parse_resume(resume_config_file: str) -> dict:
         data: dict = tomllib.load(f)
 
     return data
+
+
+def list_companies(resume_data: dict) -> list[str]:
+    companies: list[str] = []
+    experience_data = resume_data.get("default")[0]["experience"]
+    for i in range(0, len(experience_data)):
+        companies.append(experience_data[i]["name"])
+
+    return companies
 
 
 def add_one(number: int) -> int:

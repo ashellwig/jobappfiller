@@ -17,27 +17,25 @@ import click
 import json
 from rich import print_json
 
-from jobappfiller.tools.parse_job_config import add_one, parse_resume
-
-
-class DatetimeEncoder(json.JSONEncoder):
-
-    def default(self, o):
-        try:
-            return super().default(o)
-        except TypeError:
-            return str(o)
+from jobappfiller.tools.parse_job_config import add_one, parse_resume, list_companies
 
 
 @click.command()
 @click.option('-f', '--file', type=str)
-def cli_parse_resume(file: str):
+def cli_print_resume_json(file: str):
     parsed_dictionary: dict = parse_resume(resume_config_file=file)
-    parsed_dictionary_json: str = json.dumps(
-            parsed_dictionary,
-            cls=DatetimeEncoder
-    )
+    parsed_dictionary_json: str = json.dumps(parsed_dictionary)
     print_json(parsed_dictionary_json)
+
+
+@click.command()
+@click.option('-f', '--file', type=str)
+def cli_print_companies(file: str):
+    parsed_dictionary: dict = parse_resume(resume_config_file=file)
+    list_of_companies: list[str] = list_companies(parsed_dictionary)
+
+    for company in list_of_companies:
+        print(company)
 
 
 @click.command()

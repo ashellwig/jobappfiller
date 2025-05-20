@@ -15,7 +15,7 @@
 
 import click
 
-from jobappfiller.tools.cli import cli_add_one, cli_parse_resume
+from jobappfiller.tools.cli import cli_add_one, cli_print_resume_json, cli_print_companies
 
 
 @click.group()
@@ -24,7 +24,8 @@ def cli():
 
 
 cli.add_command(cli_add_one, name='add-one')
-cli.add_command(cli_parse_resume, name='parse-resume')
+cli.add_command(cli_print_resume_json, name='print-resume')
+cli.add_command(cli_print_companies, name='print-companies')
 
 if __name__ == '__main__':
     cli()
