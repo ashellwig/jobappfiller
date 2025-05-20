@@ -45,6 +45,15 @@ def list_companies(resume_data: dict) -> list[str]:
     return companies
 
 
+def list_descriptions(resume_data: dict) -> list[str]:
+    descriptions: list[str] = []
+    experience_data = resume_data.get("default")[0]["experience"]
+    for i in range(0, len(experience_data)):
+        descriptions.append(experience_data[i]["description"])
+
+    return descriptions
+
+
 def add_one(number: int) -> int:
     """Increments the given number by one.
 
