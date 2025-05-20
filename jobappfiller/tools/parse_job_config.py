@@ -12,10 +12,11 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Parses job resume configuration file."""
 
 from jobappfiller.util.logger import setup_logger
 
-logger = setup_logger()
+logger = setup_logger(log_file="jobappfiller.log")
 
 
 def add_one(number: int) -> int:
@@ -27,5 +28,5 @@ def add_one(number: int) -> int:
     Returns:
         int: Incremented number.
     """
-    logger.info('Running add_one')
+    logger.info("Running add_one")
     return number + 1

@@ -36,9 +36,10 @@ class LoggingColors:
 class CustomFormatter(logging.Formatter):
     """Logging Formatter to add colors and count warning / errors"""
 
-    def __init__(self, auto_colorized=True):
+    def __init__(self, auto_colorized=True, color_output=True):
         super(CustomFormatter, self).__init__()
         self.auto_colorized = auto_colorized
+        self.color_output = color_output
         self.formats = self.define_format()
 
     def define_format(self):
@@ -52,33 +53,47 @@ class CustomFormatter(logging.Formatter):
         # DEBUG = 10
         # NOTSET = 0
 
+        if self.auto_colorized and self.color_output:
+            format_prefix = f"{LoggingColors.purple}%(asctime)s" \
+                            f"{LoggingColors.reset} " \
+                            f"{LoggingColors.blue}%(name)s" \
+                            f"{LoggingColors.reset} " \
+                            f"{LoggingColors.light_blue}" \
+                            "(%(filename)s:%(lineno)d)" \
+                            f"{LoggingColors.reset} "
 
-        format_prefix = f"{LoggingColors.purple}%(asctime)s" \
-                        f"{LoggingColors.reset} {LoggingColors.blue}%(name)s" \
-                        f"{LoggingColors.reset} " \
-                        f"{LoggingColors.light_blue}(%(filename)s:%(lineno)d)" \
-                        f"{LoggingColors.reset} "
+            format_suffix = "%(levelname)s - %(message)s"
 
-        format_suffix = "%(levelname)s - %(message)s"
+            return {
+                    logging.DEBUG:
+                            format_prefix + LoggingColors.green + format_suffix
+                            + LoggingColors.reset,
+                    logging.INFO:
+                            format_prefix + LoggingColors.grey + format_suffix
+                            + LoggingColors.reset,
+                    logging.WARNING:
+                            format_prefix + LoggingColors.yellow + format_suffix
+                            + LoggingColors.reset,
+                    logging.ERROR:
+                            format_prefix + LoggingColors.red + format_suffix
+                            + LoggingColors.reset,
+                    logging.CRITICAL:
+                            format_prefix + LoggingColors.white_bg
+                            + LoggingColors.red + format_suffix
+                            + LoggingColors.reset
+            }
+        else:
+            format_prefix = "%(asctime)s %(name)s (%(filename)s:%(lineno)d) "
 
-        return {
-                logging.DEBUG:
-                        format_prefix + LoggingColors.green + format_suffix
-                        + LoggingColors.reset,
-                logging.INFO:
-                        format_prefix + LoggingColors.grey + format_suffix
-                        + LoggingColors.reset,
-                logging.WARNING:
-                        format_prefix + LoggingColors.yellow + format_suffix
-                        + LoggingColors.reset,
-                logging.ERROR:
-                        format_prefix + LoggingColors.red + format_suffix
-                        + LoggingColors.reset,
-                logging.CRITICAL:
-                        format_prefix + LoggingColors.white_bg
-                        + LoggingColors.red + format_suffix
-                        + LoggingColors.reset
-        }
+            format_suffix = "%(levelname)s - %(message)s"
+
+            return {
+                    logging.DEBUG: format_prefix + format_suffix,
+                    logging.INFO: format_prefix + format_suffix,
+                    logging.WARNING: format_prefix + format_suffix,
+                    logging.ERROR: format_prefix + format_suffix,
+                    logging.CRITICAL: format_prefix + format_suffix,
+            }
 
     def format(self, record):
         log_fmt = self.formats.get(record.levelno)
@@ -86,11 +101,11 @@ class CustomFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def setup_logger(log_file: str = "rhapi.log"):
+def setup_logger(log_file: str | None):
     """Configures the logger.
 
     Args:
-        log_file (str, optional): Log file path. Defaults to "rhapi.log".
+        log_file (str, optional): Log file path. Defaults to "jobappfiller.log".
 
     Returns:
         Logger: Logger instance for the current module.
@@ -102,21 +117,28 @@ def setup_logger(log_file: str = "rhapi.log"):
     if logger.hasHandlers():
         logger.handlers.clear()
 
-    # File handler
-    file_handler = logging.FileHandler(log_file)
-    file_handler.setLevel(logging.DEBUG)
+    if log_file is not None:
+        # File handler
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(logging.DEBUG)
 
     # Console handler
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.DEBUG)
 
     # Formatter
-    formatter = CustomFormatter()
-    file_handler.setFormatter(formatter)
-    console_handler.setFormatter(formatter)
+    formatter_console = CustomFormatter()
+    if log_file is not None:
+        formatter_file = CustomFormatter(
+                auto_colorized=False,
+                color_output=False
+        )
+        file_handler.setFormatter(formatter_file)
+    console_handler.setFormatter(formatter_console)
 
     # Add handlers
-    logger.addHandler(file_handler)
+    if log_file is not None:
+        logger.addHandler(file_handler)
     logger.addHandler(console_handler)
 
     return logger
