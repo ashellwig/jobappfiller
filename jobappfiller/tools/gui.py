@@ -16,8 +16,11 @@
 import pyperclip
 
 import tkinter as tk
+from tkinter import ttk
 
 from jobappfiller.tools.parse_job_config import list_descriptions, list_companies, parse_resume
+
+LARGEFONT = ("Verdana", 24)
 
 
 def button_click(i):
@@ -35,13 +38,16 @@ def run_gui(resume_data: str) -> None:
     )
 
     r = tk.Tk()
-    r.title("Companies")
+    r.title(string="Companies")
+    frm = ttk.Frame(r, padding=10)
+    frm.grid()
+    ttk.Label(frm, text="Companies", font=LARGEFONT).grid(column=1, row=0)
     for i in range(0, len(company_list)):
-        button = tk.Button(
-                r,
+        ttk.Button(
+                frm,
                 text=f"{company_list[i]}",
                 width=60,
                 command=lambda i=i: button_click(description_list[i])
-        )
-        button.pack()
+        ).grid(column=1,
+               row=i + 1)
     r.mainloop()
