@@ -326,7 +326,29 @@ class StartPage(tk.Frame):
             )
 
         label = ttk.Label(self, text="Job Application Filler", font=LARGEFONT)
-        label.grid(row=0, column=1, padx=10, pady=10)
+        label.grid(row=0, column=1, padx=5, pady=5)
+
+        separator = ttk.Separator(self, orient="horizontal")
+        separator.grid(
+                row=1,
+                column=0,
+                columnspan=3,
+                sticky="ew",
+                padx=5,
+                pady=0
+        )
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(5, weight=1)
+        self.grid_rowconfigure(6, weight=1)
+        self.grid_rowconfigure(7, weight=1)
+        self.grid_rowconfigure(8, weight=1)
 
         for i in range(0, len(company_list)):
             button = ttk.Button(
@@ -335,7 +357,7 @@ class StartPage(tk.Frame):
                     width=60,
                     command=lambda i=i + 1: controller.show_frame(cont=i)
             )
-            button.grid(row=i + 1, column=1, padx=10, pady=10)
+            button.grid(row=(i + 1) + 1, column=1, padx=5, pady=5)
 
 
 class CompanyPage(tk.Frame):
@@ -365,33 +387,57 @@ class CompanyPage(tk.Frame):
         self.jobtitle = jobtitle
         self.description = description
 
+        # Company Name Label
         label = ttk.Label(self, text=self.company_name, font=LARGEFONT)
-        label.grid(row=0, column=1, padx=10, pady=10)
+        label.grid(row=0, column=1, padx=5, pady=5)
+
+        # Separator before the buttons
+        separator = ttk.Separator(self, orient="horizontal")
+        separator.grid(
+                row=1,
+                column=0,
+                columnspan=3,
+                sticky="ew",
+                padx=5,
+                pady=0
+        )
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_rowconfigure(4, weight=1)
+        self.grid_rowconfigure(5, weight=1)
+        self.grid_rowconfigure(6, weight=1)
+        self.grid_rowconfigure(7, weight=1)
+        self.grid_rowconfigure(8, weight=1)
 
         # Location Button
         location_button = ttk.Button(self, text="Copy Location")
         location_button.bind("<Button-1>", button_click_location)
-        location_button.grid(row=1, column=1, padx=10, pady=10)
+        location_button.grid(row=2, column=1, padx=5, pady=5)
 
         # Start Date Button
         startdate_button = ttk.Button(self, text="Copy Start Date")
         startdate_button.bind("<Button-1>", button_click_startdate)
-        startdate_button.grid(row=2, column=1, padx=10, pady=10)
+        startdate_button.grid(row=3, column=1, padx=5, pady=5)
 
         # End Date Button
         enddate_button = ttk.Button(self, text="Copy End Date")
         enddate_button.bind("<Button-1>", button_click_enddate)
-        enddate_button.grid(row=3, column=1, padx=10, pady=10)
+        enddate_button.grid(row=4, column=1, padx=5, pady=5)
 
         # Job Title Button
         jobtitle_button = ttk.Button(self, text="Copy Job Title")
         jobtitle_button.bind("<Button-1>", button_click_jobtitle)
-        jobtitle_button.grid(row=4, column=1, padx=10, pady=10)
+        jobtitle_button.grid(row=5, column=1, padx=5, pady=5)
 
         # Description Button
         description_button = ttk.Button(self, text="Copy Description")
         description_button.bind("<Button-1>", button_click_description)
-        description_button.grid(row=5, column=1, padx=10, pady=10)
+        description_button.grid(row=6, column=1, padx=5, pady=5)
 
         # Return to Start Page Button
         startpage_button = ttk.Button(
@@ -399,7 +445,7 @@ class CompanyPage(tk.Frame):
                 text="Start Page",
                 command=lambda: controller.show_frame(cont=0)
         )
-        startpage_button.grid(row=6, column=1, padx=10, pady=10)
+        startpage_button.grid(row=7, column=1, padx=5, pady=5)
 
 
 def run_gui(
