@@ -361,7 +361,7 @@ class StartPage(tk.Frame):
                     text=f"{company_list[i]}",
                     width=60,
                     style=ttk.Style().configure(".",
-                                                font=(SMALLFONT)),
+                                                font=SMALLFONT),
                     command=lambda i=i + 1: controller.show_frame(cont=i)
             )
             button.grid(row=(i + 1) + 1, column=1, padx=5, pady=5)
