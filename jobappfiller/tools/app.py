@@ -16,9 +16,11 @@
 the resume configuration to the clipboard in an easy-to-use menu.
 """
 
-import pyperclip
 import tkinter as tk
+import tkinter.font as tk_font
 from tkinter import ttk
+
+import pyperclip
 
 from jobappfiller.tools.parse_job_config import (
         list_companies,
@@ -30,6 +32,9 @@ from jobappfiller.tools.parse_job_config import (
         parse_resume
 )
 from jobappfiller.util.logger import setup_logger
+
+LARGEFONT = ("calibri", 36, tk_font.BOLD)
+SMALLFONT = ("calibri", 14, tk_font.NORMAL)
 
 logger = setup_logger(log_file=None)
 
@@ -132,9 +137,6 @@ def generate_description_list(resume_config_file: str) -> list[str]:
     )
 
     return description_list
-
-
-LARGEFONT = ("Verdana", 35)
 
 
 def button_click_location(event):
@@ -325,9 +327,11 @@ class StartPage(tk.Frame):
                     resume_config_file="resume.toml"
             )
 
+        # Frame Label (App Title)
         label = ttk.Label(self, text="Job Application Filler", font=LARGEFONT)
         label.grid(row=0, column=1, padx=5, pady=5)
 
+        # Separator
         separator = ttk.Separator(self, orient="horizontal")
         separator.grid(
                 row=1,
@@ -350,11 +354,14 @@ class StartPage(tk.Frame):
         self.grid_rowconfigure(7, weight=1)
         self.grid_rowconfigure(8, weight=1)
 
+        # Company Navigation Buttons
         for i in range(0, len(company_list)):
             button = ttk.Button(
                     self,
                     text=f"{company_list[i]}",
                     width=60,
+                    style=ttk.Style().configure(".",
+                                                font=(SMALLFONT)),
                     command=lambda i=i + 1: controller.show_frame(cont=i)
             )
             button.grid(row=(i + 1) + 1, column=1, padx=5, pady=5)
@@ -480,6 +487,8 @@ def run_gui(
             jobtitle_list=generate_jobtitle_list(jobtitle_list),
             description_list=generate_description_list(description_list)
     )
+
+    app.geometry("900x350")
 
     app.mainloop()
 
