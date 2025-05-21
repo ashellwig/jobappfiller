@@ -12,17 +12,21 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Collects the functions of the `jobappfiller.tools` module to make usable
+by the click library for CLI use.
+"""
+
+import json
 
 import click
-import json
 from rich import print_json
 
-from jobappfiller.tools.parse_job_config import add_one, parse_resume, list_companies
-from jobappfiller.tools.gui import run_gui
+from jobappfiller.tools.app import run_gui
+from jobappfiller.tools.parse_job_config import parse_resume, list_companies
 
 
 @click.command()
-@click.option('-f', '--file', type=str)
+@click.option("-f", "--file", type=str)
 def cli_print_resume_json(file: str):
     parsed_dictionary: dict = parse_resume(resume_config_file=file)
     parsed_dictionary_json: str = json.dumps(parsed_dictionary)
@@ -30,7 +34,7 @@ def cli_print_resume_json(file: str):
 
 
 @click.command()
-@click.option('-f', '--file', type=str)
+@click.option("-f", "--file", type=str)
 def cli_print_companies(file: str):
     parsed_dictionary: dict = parse_resume(resume_config_file=file)
     list_of_companies: list[str] = list_companies(parsed_dictionary)
@@ -40,12 +44,6 @@ def cli_print_companies(file: str):
 
 
 @click.command()
-@click.option('-f', '--file', type=str, help='Resume config file.')
-def cli_start_gui(file: str):
-    run_gui(resume_data=file)
-
-
-@click.command()
-@click.option('-n', '--num', type=int)
-def cli_add_one(num: int):
-    click.echo(str(add_one(number=num)))
+@click.option("-f", "--file", type=str, help="Path to resume config file.")
+def cli_run_gui(file: str):
+    run_gui(company_list=file, description_list=file)

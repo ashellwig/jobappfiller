@@ -12,10 +12,15 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Collects the CLI tools from each module and adds them to the main package."""
 
 import click
 
-from jobappfiller.tools.cli import cli_add_one, cli_print_resume_json, cli_print_companies, cli_start_gui
+from jobappfiller.tools.cli import (
+        cli_print_resume_json,
+        cli_print_companies,
+        cli_run_gui
+)
 
 
 @click.group()
@@ -23,10 +28,9 @@ def cli():
     pass
 
 
-cli.add_command(cli_add_one, name='add-one')
 cli.add_command(cli_print_resume_json, name='print-resume')
 cli.add_command(cli_print_companies, name='print-companies')
-cli.add_command(cli_start_gui, name='gui')
+cli.add_command(cli_run_gui, name='gui')
 
 if __name__ == '__main__':
     cli()

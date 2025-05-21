@@ -12,6 +12,9 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""Runs a GUI application to copy the data from each experience entry in
+the resume configuration to the clipboard in an easy-to-use menu.
+"""
 
 import pyperclip
 import tkinter as tk
@@ -22,13 +25,21 @@ from jobappfiller.util.logger import setup_logger
 
 logger = setup_logger(log_file=None)
 
-company_list: list[str] = list_companies(
-        resume_data=parse_resume(resume_config_file="resume.toml")
-)
 
-description_list: list[str] = list_descriptions(
-        resume_data=parse_resume(resume_config_file="resume.toml")
-)
+def generate_company_list(resume_config_file: str) -> list[str]:
+    company_list: list[str] = list_companies(
+            resume_data=parse_resume(resume_config_file=resume_config_file)
+    )
+
+    return company_list
+
+
+def generate_description_list(resume_config_file: str) -> list[str]:
+    description_list: list[str] = list_descriptions(
+            resume_data=parse_resume(resume_config_file=resume_config_file)
+    )
+    return description_list
+
 
 LARGEFONT = ("Verdana", 35)
 
@@ -40,9 +51,31 @@ def button_click(event):
 
 
 class TkinterApp(tk.Tk):
+    """Top-level app that serves the purpose of switching frames between each
+    company selected.
 
-    def __init__(self, *args, **kwargs):
+    Args:
+        tk (tkinter.Tk): The main Tkinter window.
+    """
+
+    def __init__(
+            self,
+            company_list: list[str] | None,
+            description_list: list[str] | None,
+            *args,
+            **kwargs
+    ):
         tk.Tk.__init__(self, *args, **kwargs)
+
+        if company_list is None:
+            company_list = generate_company_list(
+                    resume_config_file="resume.toml"
+            )
+
+        if description_list is None:
+            description_list = generate_description_list(
+                    resume_config_file="resume.toml"
+            )
 
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
@@ -62,13 +95,11 @@ class TkinterApp(tk.Tk):
                             description=description_list[i]
                     )
             )
-        # for f in (StartPage):
-        # frame = f(container, self)
-        # self.frames[f] = frame
-        # frame.grid(row=0, column=0, sticky="nsew")
-        startpage_frame = StartPage(container, self)
+
+        startpage_frame = StartPage(container, self, company_list=company_list)
         self.frames[0] = startpage_frame
         startpage_frame.grid(row=0, column=0, sticky="nsew")
+
         for i in range(0, len(company_list)):
             frame = CompanyPage(
                     container,
@@ -77,26 +108,34 @@ class TkinterApp(tk.Tk):
                     description=description_list[i]
             )
             self.frames[i + 1] = frame
-            # self.frames.update(frame)
             frame.grid(row=0, column=0, sticky="nsew")
+
         self.show_frame(cont=0)
 
     def show_frame(self, cont):
-        if cont is None:
-            cont = self.frames.get(0)
-        else:
-            cont = self.frames[cont]
-        frame = cont
+        frame = self.frames[cont]
         frame.tkraise()
 
 
 class StartPage(tk.Frame):
+    """The homepage of the GUI application, listing all the companies found
+    in the user's provided configuration file.
 
-    def __init__(self, parent, controller):
+    Args:
+        tk (tkinter.Frame): Widget for a `tkinter.Frame`.
+    """
+
+    def __init__(self, parent, controller, company_list: list[str] | None):
         tk.Frame.__init__(self, parent)
+
+        if company_list is None:
+            company_list = generate_company_list(
+                    resume_config_file="resume.toml"
+            )
 
         label = ttk.Label(self, text="Job Application Filler", font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
+
         for i in range(0, len(company_list)):
             button = ttk.Button(
                     self,
@@ -108,6 +147,12 @@ class StartPage(tk.Frame):
 
 
 class CompanyPage(tk.Frame):
+    """Page containing the information for each listed experience and a button
+    to copy each field to the clipboard.
+
+    Args:
+        tk (tkinter.Frame): Widget for a `tkinter.Frame`.
+    """
 
     def __init__(self, parent, controller, company_name, description):
         tk.Frame.__init__(self, parent)
@@ -129,6 +174,16 @@ class CompanyPage(tk.Frame):
         startpage_button.grid(row=2, column=1, padx=10, pady=10)
 
 
-if __name__ == "__main__":
-    app = TkinterApp()
+def run_gui(
+        company_list: str = "resume.toml",
+        description_list: str = "resume.toml"
+):
+    app = TkinterApp(
+            company_list=generate_company_list(company_list),
+            description_list=generate_description_list(description_list)
+    )
     app.mainloop()
+
+
+if __name__ == "__main__":
+    run_gui()
