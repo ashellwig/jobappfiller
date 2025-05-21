@@ -366,7 +366,7 @@ class CompanyPage(tk.Frame):
         self.description = description
 
         label = ttk.Label(self, text=self.company_name, font=LARGEFONT)
-        label.grid(row=0, column=4, padx=10, pady=10)
+        label.grid(row=0, column=1, padx=10, pady=10)
 
         # Location Button
         location_button = ttk.Button(self, text="Copy Location")
