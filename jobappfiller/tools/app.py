@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)
+# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,9 @@ import tkinter as tk
 from tkinter import ttk
 
 from jobappfiller.tools.parse_job_config import list_descriptions, list_companies, parse_resume
+from jobappfiller.util.logger import setup_logger
+
+logger = setup_logger(log_file=None)
 
 company_list: list[str] = list_companies(
         resume_data=parse_resume(resume_config_file="resume.toml")
@@ -30,9 +33,10 @@ description_list: list[str] = list_descriptions(
 LARGEFONT = ("Verdana", 35)
 
 
-def button_click(i):
-    pyperclip.copy(f"{i}")
-    print("Copied job description to clipboard.")
+def button_click(event):
+    pyperclip.copy(f"{event.widget.master.description}")
+    logger.info("Copying description for: %s", event.widget.master.company_name)
+    logger.info("Description = %s", event.widget.master.description)
 
 
 class TkinterApp(tk.Tk):
@@ -58,15 +62,31 @@ class TkinterApp(tk.Tk):
                             description=description_list[i]
                     )
             )
-        for i in range(0, len(self.company_pages)):
-            for F in (StartPage, self.company_pages[i]):
-                frame = F(container, self)
-                self.frames[F] = frame
-                frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame(StartPage)
+        # for f in (StartPage):
+        # frame = f(container, self)
+        # self.frames[f] = frame
+        # frame.grid(row=0, column=0, sticky="nsew")
+        startpage_frame = StartPage(container, self)
+        self.frames[0] = startpage_frame
+        startpage_frame.grid(row=0, column=0, sticky="nsew")
+        for i in range(0, len(company_list)):
+            frame = CompanyPage(
+                    container,
+                    self,
+                    company_list[i],
+                    description=description_list[i]
+            )
+            self.frames[i + 1] = frame
+            # self.frames.update(frame)
+            frame.grid(row=0, column=0, sticky="nsew")
+        self.show_frame(cont=0)
 
     def show_frame(self, cont):
-        frame = self.frames[cont]
+        if cont is None:
+            cont = self.frames.get(0)
+        else:
+            cont = self.frames[cont]
+        frame = cont
         frame.tkraise()
 
 
@@ -77,40 +97,38 @@ class StartPage(tk.Frame):
 
         label = ttk.Label(self, text="Job Application Filler", font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
-        for i in range(1, len(company_list)):
+        for i in range(0, len(company_list)):
             button = ttk.Button(
                     self,
                     text=f"{company_list[i]}",
                     width=60,
-                    command=lambda i=i: controller.
-                    show_frame(f"!companypage{i}")
+                    command=lambda i=i + 1: controller.show_frame(cont=i)
             )
-            button.grid(row=i, column=1, padx=10, pady=10)
+            button.grid(row=i + 1, column=1, padx=10, pady=10)
 
 
 class CompanyPage(tk.Frame):
 
     def __init__(self, parent, controller, company_name, description):
         tk.Frame.__init__(self, parent)
+        self.company_name = company_name
+        self.description = description
 
-        label = ttk.Label(self, text=company_name, font=LARGEFONT)
+        label = ttk.Label(self, text=self.company_name, font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
 
-        description_button = ttk.Button(
-                self,
-                text="Copy Description",
-                command=button_click(description)
-        )
+        description_button = ttk.Button(self, text="Copy Description")
+        description_button.bind("<Button-1>", button_click)
         description_button.grid(row=1, column=1, padx=10, pady=10)
 
         startpage_button = ttk.Button(
                 self,
                 text="Start Page",
-                command=lambda: controller.show_frame(StartPage)
+                command=lambda: controller.show_frame(cont=0)
         )
         startpage_button.grid(row=2, column=1, padx=10, pady=10)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = TkinterApp()
     app.mainloop()

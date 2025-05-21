@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)
+# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,7 @@ def run_gui(resume_data: str) -> None:
     frm = ttk.Frame(r, padding=10)
     frm.grid()
     ttk.Label(frm, text="Companies", font=LARGEFONT).grid(column=1, row=0)
+    ttk.Separator(frm, orient="horizontal")
     for i in range(0, len(company_list)):
         ttk.Button(
                 frm,
@@ -49,5 +50,5 @@ def run_gui(resume_data: str) -> None:
                 width=60,
                 command=lambda i=i: button_click(description_list[i])
         ).grid(column=1,
-               row=i + 1)
+                row=i + 1)
     r.mainloop()
