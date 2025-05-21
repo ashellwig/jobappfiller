@@ -273,7 +273,11 @@ class TkinterApp(tk.Tk):
 
         startpage_frame = StartPage(container, self, company_list=company_list)
         self.frames[0] = startpage_frame
-        startpage_frame.grid(row=0, column=0, sticky="nsew")
+        startpage_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        startpage_frame.grid_rowconfigure(0, weight=1)
+        startpage_frame.grid_columnconfigure(0, weight=1)
+        startpage_frame.grid_columnconfigure(1, weight=1)
+        startpage_frame.grid_columnconfigure(2, weight=1)
 
         for i in range(0, len(company_list)):
             frame = CompanyPage(
@@ -287,7 +291,11 @@ class TkinterApp(tk.Tk):
                     description=description_list[i]
             )
             self.frames[i + 1] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
+            frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+            frame.grid_rowconfigure(0, weight=1)
+            frame.grid_columnconfigure(0, weight=1)
+            frame.grid_columnconfigure(1, weight=1)
+            frame.grid_columnconfigure(2, weight=1)
 
         self.show_frame(cont=0)
 
@@ -318,7 +326,7 @@ class StartPage(tk.Frame):
             )
 
         label = ttk.Label(self, text="Job Application Filler", font=LARGEFONT)
-        label.grid(row=0, column=4, padx=10, pady=10)
+        label.grid(row=0, column=1, padx=10, pady=10)
 
         for i in range(0, len(company_list)):
             button = ttk.Button(
