@@ -20,7 +20,15 @@ import pyperclip
 import tkinter as tk
 from tkinter import ttk
 
-from jobappfiller.tools.parse_job_config import list_descriptions, list_companies, parse_resume
+from jobappfiller.tools.parse_job_config import (
+        list_companies,
+        list_locations,
+        list_startdates,
+        list_enddates,
+        list_jobtitles,
+        list_descriptions,
+        parse_resume
+)
 from jobappfiller.util.logger import setup_logger
 
 logger = setup_logger(log_file=None)
@@ -34,17 +42,74 @@ def generate_company_list(resume_config_file: str) -> list[str]:
     return company_list
 
 
+def generate_location_list(resume_config_file: str) -> list[str]:
+    location_list: list[str] = list_locations(
+            resume_data=parse_resume(resume_config_file=resume_config_file)
+    )
+
+    return location_list
+
+
+def generate_startdate_list(resume_config_file: str) -> list[str]:
+    startdate_list: list[str] = list_startdates(
+            resume_data=parse_resume(resume_config_file=resume_config_file)
+    )
+
+    return startdate_list
+
+
+def generate_enddate_list(resume_config_file: str) -> list[str]:
+    enddate_list: list[str] = list_enddates(
+            resume_data=parse_resume(resume_config_file=resume_config_file)
+    )
+
+    return enddate_list
+
+
+def generate_jobtitle_list(resume_config_file: str) -> list[str]:
+    jobtitle_list: list[str] = list_jobtitles(
+            resume_data=parse_resume(resume_config_file=resume_config_file)
+    )
+
+    return jobtitle_list
+
+
 def generate_description_list(resume_config_file: str) -> list[str]:
     description_list: list[str] = list_descriptions(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
+
     return description_list
 
 
 LARGEFONT = ("Verdana", 35)
 
 
-def button_click(event):
+def button_click_location(event):
+    pyperclip.copy(f"{event.widget.master.location}")
+    logger.info("Copying location for: %s", event.widget.master.company_name)
+    logger.info("location = %s", event.widget.master.location)
+
+
+def button_click_startdate(event):
+    pyperclip.copy(f"{event.widget.master.startdate}")
+    logger.info("Copying description for: %s", event.widget.master.company_name)
+    logger.info("startdate = %s", event.widget.master.startdate)
+
+
+def button_click_enddate(event):
+    pyperclip.copy(f"{event.widget.master.enddate}")
+    logger.info("Copying description for: %s", event.widget.master.company_name)
+    logger.info("enddate = %s", event.widget.master.enddate)
+
+
+def button_click_jobtitle(event):
+    pyperclip.copy(f"{event.widget.master.jobtitle}")
+    logger.info("Copying description for: %s", event.widget.master.company_name)
+    logger.info("jobtitle = %s", event.widget.master.jobtitle)
+
+
+def button_click_description(event):
     pyperclip.copy(f"{event.widget.master.description}")
     logger.info("Copying description for: %s", event.widget.master.company_name)
     logger.info("Description = %s", event.widget.master.description)
@@ -61,6 +126,10 @@ class TkinterApp(tk.Tk):
     def __init__(
             self,
             company_list: list[str] | None,
+            location_list: list[str] | None,
+            startdate_list: list[str] | None,
+            enddate_list: list[str] | None,
+            jobtitle_list: list[str] | None,
             description_list: list[str] | None,
             *args,
             **kwargs
@@ -69,6 +138,26 @@ class TkinterApp(tk.Tk):
 
         if company_list is None:
             company_list = generate_company_list(
+                    resume_config_file="resume.toml"
+            )
+
+        if location_list is None:
+            location_list = generate_location_list(
+                    resume_config_file="resume.toml"
+            )
+
+        if startdate_list is None:
+            startdate_list = generate_startdate_list(
+                    resume_config_file="resume.toml"
+            )
+
+        if enddate_list is None:
+            enddate_list = generate_enddate_list(
+                    resume_config_file="resume.toml"
+            )
+
+        if jobtitle_list is None:
+            jobtitle_list = generate_jobtitle_list(
                     resume_config_file="resume.toml"
             )
 
@@ -92,6 +181,10 @@ class TkinterApp(tk.Tk):
                             container,
                             self,
                             company_name=company_list[i],
+                            location=location_list[i],
+                            startdate=startdate_list[i],
+                            enddate=enddate_list[i],
+                            jobtitle=jobtitle_list[i],
                             description=description_list[i]
                     )
             )
@@ -105,6 +198,10 @@ class TkinterApp(tk.Tk):
                     container,
                     self,
                     company_list[i],
+                    location=location_list[i],
+                    startdate=startdate_list[i],
+                    enddate=enddate_list[i],
+                    jobtitle=jobtitle_list[i],
                     description=description_list[i]
             )
             self.frames[i + 1] = frame
@@ -154,32 +251,76 @@ class CompanyPage(tk.Frame):
         tk (tkinter.Frame): Widget for a `tkinter.Frame`.
     """
 
-    def __init__(self, parent, controller, company_name, description):
+    def __init__(
+            self,
+            parent,
+            controller,
+            company_name,
+            location,
+            startdate,
+            enddate,
+            jobtitle,
+            description
+    ):
         tk.Frame.__init__(self, parent)
         self.company_name = company_name
+        self.location = location
+        self.startdate = startdate
+        self.enddate = enddate
+        self.jobtitle = jobtitle
         self.description = description
 
         label = ttk.Label(self, text=self.company_name, font=LARGEFONT)
         label.grid(row=0, column=4, padx=10, pady=10)
 
-        description_button = ttk.Button(self, text="Copy Description")
-        description_button.bind("<Button-1>", button_click)
-        description_button.grid(row=1, column=1, padx=10, pady=10)
+        # Location Button
+        location_button = ttk.Button(self, text="Copy Location")
+        location_button.bind("<Button-1>", button_click_location)
+        location_button.grid(row=1, column=1, padx=10, pady=10)
 
+        # Start Date Button
+        startdate_button = ttk.Button(self, text="Copy Start Date")
+        startdate_button.bind("<Button-1>", button_click_startdate)
+        startdate_button.grid(row=2, column=1, padx=10, pady=10)
+
+        # End Date Button
+        enddate_button = ttk.Button(self, text="Copy End Date")
+        enddate_button.bind("<Button-1>", button_click_enddate)
+        enddate_button.grid(row=3, column=1, padx=10, pady=10)
+
+        # Job Title Button
+        jobtitle_button = ttk.Button(self, text="Copy Job Title")
+        jobtitle_button.bind("<Button-1>", button_click_jobtitle)
+        jobtitle_button.grid(row=4, column=1, padx=10, pady=10)
+
+        # Description Button
+        description_button = ttk.Button(self, text="Copy Description")
+        description_button.bind("<Button-1>", button_click_description)
+        description_button.grid(row=5, column=1, padx=10, pady=10)
+
+        # Return to Start Page Button
         startpage_button = ttk.Button(
                 self,
                 text="Start Page",
                 command=lambda: controller.show_frame(cont=0)
         )
-        startpage_button.grid(row=2, column=1, padx=10, pady=10)
+        startpage_button.grid(row=6, column=1, padx=10, pady=10)
 
 
 def run_gui(
         company_list: str = "resume.toml",
+        location_list: str = "resume.toml",
+        startdate_list: str = "resume.toml",
+        enddate_list: str = "resume.toml",
+        jobtitle_list: str = "resume.toml",
         description_list: str = "resume.toml"
 ):
     app = TkinterApp(
             company_list=generate_company_list(company_list),
+            location_list=generate_location_list(location_list),
+            startdate_list=generate_startdate_list(startdate_list),
+            enddate_list=generate_enddate_list(enddate_list),
+            jobtitle_list=generate_jobtitle_list(jobtitle_list),
             description_list=generate_description_list(description_list)
     )
     app.mainloop()

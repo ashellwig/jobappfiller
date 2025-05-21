@@ -37,6 +37,14 @@ def parse_resume(resume_config_file: str) -> dict:
 
 
 def list_companies(resume_data: dict) -> list[str]:
+    """Gets the company names of the companies in `resume_data`
+
+    Args:
+        resume_data (dict): Parsed dictionary of resume data.
+
+    Returns:
+        list[str]: List of company names for each company in experience.
+    """
     companies: list[str] = []
     experience_data = resume_data.get("default")[0]["experience"]
     for i in range(0, len(experience_data)):
@@ -45,23 +53,86 @@ def list_companies(resume_data: dict) -> list[str]:
     return companies
 
 
+def list_locations(resume_data: dict) -> list[str]:
+    """Gets the locations of the companies in `resume_data`
+
+    Args:
+        resume_data (dict): Parsed dictionary of resume data.
+
+    Returns:
+        list[str]: List of locations for each company in experience.
+    """
+    locations: list[str] = []
+    experience_data = resume_data.get("default")[0]["experience"]
+    for i in range(0, len(experience_data)):
+        locations.append(experience_data[i]["location"])
+
+    return locations
+
+
+def list_startdates(resume_data: dict) -> list[str]:
+    """Gets the start date of the companies in `resume_data`
+
+    Args:
+        resume_data (dict): Parsed dictionary of resume data.
+
+    Returns:
+        list[str]: List of start dates for each company in experience.
+    """
+    start_dates: list[str] = []
+    experience_data = resume_data.get("default")[0]["experience"]
+    for i in range(0, len(experience_data)):
+        start_dates.append(experience_data[i]["startdate"])
+
+    return start_dates
+
+
+def list_enddates(resume_data: dict) -> list[str]:
+    """Gets the end date of the companies in `resume_data`
+
+    Args:
+        resume_data (dict): Parsed dictionary of resume data.
+
+    Returns:
+        list[str]: List of end dates for each company in experience.
+    """
+    end_dates: list[str] = []
+    experience_data = resume_data.get("default")[0]["experience"]
+    for i in range(0, len(experience_data)):
+        end_dates.append(experience_data[i]["enddate"])
+
+    return end_dates
+
+
+def list_jobtitles(resume_data: dict) -> list[str]:
+    """Gets the job title for each company in `resume_data`.
+
+    Args:
+        resume_data (dict): Parsed dictionary of resume data.
+
+    Returns:
+        list[str]: List of job titles for each company in experience.
+    """
+    end_dates: list[str] = []
+    experience_data = resume_data.get("default")[0]["experience"]
+    for i in range(0, len(experience_data)):
+        end_dates.append(experience_data[i]["jobtitle"])
+
+    return end_dates
+
+
 def list_descriptions(resume_data: dict) -> list[str]:
+    """Gets the descriptions of each company in `resume_data`.
+
+    Args:
+        resume_data (dict): Parsed dictionary of resume data.
+
+    Returns:
+        list[str]: List of discriptions for each company in experience.
+    """
     descriptions: list[str] = []
     experience_data = resume_data.get("default")[0]["experience"]
     for i in range(0, len(experience_data)):
         descriptions.append(experience_data[i]["description"])
 
     return descriptions
-
-
-def add_one(number: int) -> int:
-    """Increments the given number by one.
-
-    Args:
-        number (int): Number to increment.
-
-    Returns:
-        int: Incremented number.
-    """
-    logger.info("Running add_one")
-    return number + 1
