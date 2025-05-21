@@ -35,6 +35,14 @@ logger = setup_logger(log_file=None)
 
 
 def generate_company_list(resume_config_file: str) -> list[str]:
+    """Retrieve the list of companies from the resume configuration file.
+
+    Args:
+        resume_config_file (str): Path to resume configuration file.
+
+    Returns:
+        list[str]: List of companies names under experience.
+    """
     company_list: list[str] = list_companies(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
@@ -43,6 +51,15 @@ def generate_company_list(resume_config_file: str) -> list[str]:
 
 
 def generate_location_list(resume_config_file: str) -> list[str]:
+    """Retrieve the list of company locations from the
+    resume configuration file.
+
+    Args:
+        resume_config_file (str): Path to resume configuration file.
+
+    Returns:
+        list[str]: List of company locations.
+    """
     location_list: list[str] = list_locations(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
@@ -51,6 +68,15 @@ def generate_location_list(resume_config_file: str) -> list[str]:
 
 
 def generate_startdate_list(resume_config_file: str) -> list[str]:
+    """Retrieve the list of company start dates from the
+    resume configuration file.
+
+    Args:
+        resume_config_file (str): Path to resume configuration file.
+
+    Returns:
+        list[str]: List of company start dates.
+    """
     startdate_list: list[str] = list_startdates(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
@@ -59,6 +85,15 @@ def generate_startdate_list(resume_config_file: str) -> list[str]:
 
 
 def generate_enddate_list(resume_config_file: str) -> list[str]:
+    """Retrieve the list of company end dates from the
+    resume configuration file.
+
+    Args:
+        resume_config_file (str): Path to resume configuration file.
+
+    Returns:
+        list[str]: List of company end dates.
+    """
     enddate_list: list[str] = list_enddates(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
@@ -67,6 +102,14 @@ def generate_enddate_list(resume_config_file: str) -> list[str]:
 
 
 def generate_jobtitle_list(resume_config_file: str) -> list[str]:
+    """Retrieve the list of job titles from the resume configuration file.
+
+    Args:
+        resume_config_file (str): Path to resume configuration file.
+
+    Returns:
+        list[str]: List of company job titles.
+    """
     jobtitle_list: list[str] = list_jobtitles(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
@@ -75,6 +118,15 @@ def generate_jobtitle_list(resume_config_file: str) -> list[str]:
 
 
 def generate_description_list(resume_config_file: str) -> list[str]:
+    """Retrieve the list of company job descriptions from the
+    resume configuration file.
+
+    Args:
+        resume_config_file (str): Path to resume configuration file.
+
+    Returns:
+        list[str]: List of company job descriptions.
+    """
     description_list: list[str] = list_descriptions(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
@@ -86,30 +138,60 @@ LARGEFONT = ("Verdana", 35)
 
 
 def button_click_location(event):
+    """Copies the location of the experience to the clipboard.
+
+    Args:
+        event (tkinter.EventType.ButtonPress): Event caused by
+        pressing the Location button.
+    """
     pyperclip.copy(f"{event.widget.master.location}")
     logger.info("Copying location for: %s", event.widget.master.company_name)
     logger.info("location = %s", event.widget.master.location)
 
 
 def button_click_startdate(event):
+    """Copies the startdate of the experience to the clipboard.
+
+    Args:
+        event (tkinter.EventType.ButtonPress): Event caused by
+        pressing the Start Date button.
+    """
     pyperclip.copy(f"{event.widget.master.startdate}")
     logger.info("Copying description for: %s", event.widget.master.company_name)
     logger.info("startdate = %s", event.widget.master.startdate)
 
 
 def button_click_enddate(event):
+    """Copies the enddate of the experience to the clipboard.
+
+    Args:
+        event (tkinter.EventType.ButtonPress): Event caused by
+        pressing the End Date button.
+    """
     pyperclip.copy(f"{event.widget.master.enddate}")
     logger.info("Copying description for: %s", event.widget.master.company_name)
     logger.info("enddate = %s", event.widget.master.enddate)
 
 
 def button_click_jobtitle(event):
+    """Copies the jobtitle of the experience to the clipboard.
+
+    Args:
+        event (tkinter.EventType.ButtonPress): Event caused by
+        pressing the Job Title button.
+    """
     pyperclip.copy(f"{event.widget.master.jobtitle}")
     logger.info("Copying description for: %s", event.widget.master.company_name)
     logger.info("jobtitle = %s", event.widget.master.jobtitle)
 
 
 def button_click_description(event):
+    """Copies the description of the experience to the clipboard.
+
+    Args:
+        event (tkinter.EventType.ButtonPress): Event caused by
+        pressing the Description button.
+    """
     pyperclip.copy(f"{event.widget.master.description}")
     logger.info("Copying description for: %s", event.widget.master.company_name)
     logger.info("Description = %s", event.widget.master.description)
@@ -210,6 +292,11 @@ class TkinterApp(tk.Tk):
         self.show_frame(cont=0)
 
     def show_frame(self, cont):
+        """Shows the frame of the specified job.
+
+        Args:
+            cont (int): Index of the frame under `self.frames` to display.
+        """
         frame = self.frames[cont]
         frame.tkraise()
 
@@ -315,6 +402,22 @@ def run_gui(
         jobtitle_list: str = "resume.toml",
         description_list: str = "resume.toml"
 ):
+    """Runs the GUI application.
+
+    Args:
+        company_list (str, optional): List of companies. Defaults
+            to "resume.toml".
+        location_list (str, optional): List of company locations.
+            Defaults to "resume.toml".
+        startdate_list (str, optional): List of start dates.
+            Defaults to "resume.toml".
+        enddate_list (str, optional): List of end dates.
+            Defaults to "resume.toml".
+        jobtitle_list (str, optional): List of job titles.
+            Defaults to "resume.toml".
+        description_list (str, optional): List of company job descriptions.
+            Defaults to "resume.toml".
+    """
     app = TkinterApp(
             company_list=generate_company_list(company_list),
             location_list=generate_location_list(location_list),
