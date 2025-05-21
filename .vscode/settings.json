@@ -32,7 +32,7 @@
         "plaintext": false,
         "markdown": false,
         "scminput": false,
-        "python": true
+        "python": false
     },
     // Licencing
     "license.author": "Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)",

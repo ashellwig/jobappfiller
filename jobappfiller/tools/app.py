@@ -480,6 +480,7 @@ def run_gui(
             jobtitle_list=generate_jobtitle_list(jobtitle_list),
             description_list=generate_description_list(description_list)
     )
+
     app.mainloop()
 
 
