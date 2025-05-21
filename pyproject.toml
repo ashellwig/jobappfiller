@@ -23,10 +23,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jobappfiller"
 authors = [
-    {name = "Ash Hellwig", email = "ahellwig.dev@gmail.com"},
+    {name = "Ash Hellwig", email = "ahellwig.dev@gmail.com"}
 ]
 description = "Automatically fill in experience for online job applications."
-version = "0.0.1"
+version = "0.1.0"
 readme = "README.md"
 requires-python = ">= 3.13"
 keywords = ["selenium", "browser", "cli"]
@@ -37,7 +37,6 @@ dependencies = [
     "pylint==3.3.7",
     "pyperclip==1.9.0",
     "pytest==8.3.5",
-    "python-dotenv==1.1.0",
     "rich==14.0.0",
     "yapf==0.43.0"
 ]
