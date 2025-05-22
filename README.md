@@ -148,15 +148,16 @@ Either visit the [latest release] page on github or use the following script
 
 ```bash
 latest_release="releases/latest/download/jobappfiller-cli"
+
 if type "wget" >/dev/null; then
     wget "https://github.com/ashellwig/jobappfiller/${latest_release}"
-    chmod +x ./jobappfiller
+    chmod +x ./jobappfiller-cli
     echo -e "\033[1,32mSuccessfully downloaded ${latest_release}\033[0m"
 elif type "curl" >/dev/null; then
     echo -e "\033[1,33mUsing curl to download ${latest_release}\033[0m"
     curl \
         -L "https://github.com/ashellwig/jobappfiller/${latest_release}" \
-        >jobappfiller
+        >jobappfiller-cli
     chmod +x ./jobappfiller
     echo -e "\033[1,32mSuccessfully downloaded ${latest_release}\033[0m"
 else
