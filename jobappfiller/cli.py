@@ -14,6 +14,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """Collects the CLI tools from each module and adds them to the main package."""
 
+import importlib.metadata
+
 import click
 
 from jobappfiller.tools.cli import (
@@ -22,15 +24,19 @@ from jobappfiller.tools.cli import (
         cli_run_gui
 )
 
+JAF_VERSION: str = importlib.metadata.version("jobappfiller")
+
 
 @click.group()
-def cli():
+@click.version_option(version=JAF_VERSION, package_name="jobappfiller")
+@click.pass_context
+def cli(ctx):  # pylint: disable=W0613
     pass
 
 
-cli.add_command(cli_print_resume_json, name='print-resume')
-cli.add_command(cli_print_companies, name='print-companies')
-cli.add_command(cli_run_gui, name='gui')
+cli.add_command(cli_print_resume_json, name="print-resume")
+cli.add_command(cli_print_companies, name="print-companies")
+cli.add_command(cli_run_gui, name="gui")
 
-if __name__ == '__main__':
-    cli()
+if __name__ == "__main__":
+    cli()  # pylint: disable=E1120
