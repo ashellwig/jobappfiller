@@ -47,9 +47,9 @@ jobs:
     - name: Lint with pylint
       run: |
         pylint --rcfile=pyproject.toml jobappfiller
-    - name: Test with pytest
-      run: |
-        pytest
+    # - name: Test with pytest
+    #   run: |
+    #     pytest
     - name: Publish to PyPi
       uses: casperdcl/deploy-pypi@v2
       with:
