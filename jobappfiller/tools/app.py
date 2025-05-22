@@ -139,6 +139,21 @@ def generate_description_list(resume_config_file: str) -> list[str]:
     return description_list
 
 
+def button_click_company_name(event):
+    """Copies the name of the company from experience to the clipboard.
+
+    Args:
+        event (tkinter.EventType.ButtonPress): Event caused by
+        pressing the Company Name button.
+    """
+    pyperclip.copy(f"{event.widget.master.company_name}")
+    logger.info(
+            "Copying Company Name for: %s",
+            event.widget.master.company_name
+    )
+    logger.info("location = %s", event.widget.master.company_name)
+
+
 def button_click_location(event):
     """Copies the location of the experience to the clipboard.
 
@@ -421,30 +436,35 @@ class CompanyPage(tk.Frame):
         self.grid_rowconfigure(7, weight=1)
         self.grid_rowconfigure(8, weight=1)
 
+        # Company Name Button
+        company_name_button = ttk.Button(self, text="Copy Company Name")
+        company_name_button.bind("<Button-1>", button_click_company_name)
+        company_name_button.grid(row=2, column=1, padx=5, pady=5)
+
         # Location Button
         location_button = ttk.Button(self, text="Copy Location")
         location_button.bind("<Button-1>", button_click_location)
-        location_button.grid(row=2, column=1, padx=5, pady=5)
+        location_button.grid(row=3, column=1, padx=5, pady=5)
 
         # Start Date Button
         startdate_button = ttk.Button(self, text="Copy Start Date")
         startdate_button.bind("<Button-1>", button_click_startdate)
-        startdate_button.grid(row=3, column=1, padx=5, pady=5)
+        startdate_button.grid(row=4, column=1, padx=5, pady=5)
 
         # End Date Button
         enddate_button = ttk.Button(self, text="Copy End Date")
         enddate_button.bind("<Button-1>", button_click_enddate)
-        enddate_button.grid(row=4, column=1, padx=5, pady=5)
+        enddate_button.grid(row=5, column=1, padx=5, pady=5)
 
         # Job Title Button
         jobtitle_button = ttk.Button(self, text="Copy Job Title")
         jobtitle_button.bind("<Button-1>", button_click_jobtitle)
-        jobtitle_button.grid(row=5, column=1, padx=5, pady=5)
+        jobtitle_button.grid(row=6, column=1, padx=5, pady=5)
 
         # Description Button
         description_button = ttk.Button(self, text="Copy Description")
         description_button.bind("<Button-1>", button_click_description)
-        description_button.grid(row=6, column=1, padx=5, pady=5)
+        description_button.grid(row=7, column=1, padx=5, pady=5)
 
         # Return to Start Page Button
         startpage_button = ttk.Button(
@@ -452,7 +472,7 @@ class CompanyPage(tk.Frame):
                 text="Start Page",
                 command=lambda: controller.show_frame(cont=0)
         )
-        startpage_button.grid(row=7, column=1, padx=5, pady=5)
+        startpage_button.grid(row=8, column=1, padx=5, pady=5)
 
 
 def run_gui(
@@ -488,7 +508,7 @@ def run_gui(
             description_list=generate_description_list(description_list)
     )
 
-    app.geometry("900x350")
+    app.geometry("900x450")
 
     app.mainloop()
 
