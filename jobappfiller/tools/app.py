@@ -16,6 +16,7 @@
 the resume configuration to the clipboard in an easy-to-use menu.
 """
 
+import re
 import tkinter as tk
 import tkinter.font as tk_font
 from tkinter import ttk
@@ -72,12 +73,16 @@ def generate_location_list(resume_config_file: str) -> list[str]:
     return location_list
 
 
-def generate_startdate_list(resume_config_file: str) -> list[str]:
+def generate_startdate_list(resume_config_file: str,
+                            date_format: str | None) -> list[str]:
     """Retrieve the list of company start dates from the
     resume configuration file.
 
+
     Args:
         resume_config_file (str): Path to resume configuration file.
+        date_format (str | None, optional): Date format. Must be "yyyy/MM",
+            "MM/yyyy", "yyyy/MM/dd", or "MM/dd/yyyy". Defaults to "MM/dd/yyyy".
 
     Returns:
         list[str]: List of company start dates.
@@ -85,16 +90,41 @@ def generate_startdate_list(resume_config_file: str) -> list[str]:
     startdate_list: list[str] = list_startdates(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
+    modified_startdate_list: list[str] = []
 
-    return startdate_list
+    if date_format == "yyyy/MM":
+        for i in range(0, len(startdate_list)):
+            modified_startdate_list.append(
+                    f"{startdate_list[i][-4:]}/{startdate_list[i][:2]}"
+            )
+    elif date_format == "MM/yyyy":
+        for i in range(0, len(startdate_list)):
+            modified_startdate_list.append(
+                    f"{startdate_list[i][:2]}/{startdate_list[i][-4:]}"
+            )
+    elif date_format == "yyyy/MM/dd":
+        for i in range(0, len(startdate_list)):
+            day = re.search(r"\/(.*?)\/", startdate_list[i]).group(1)
+            modified_startdate_list.append(
+                    f"{startdate_list[i][-4:]}/{startdate_list[i][:2]}/{day}"
+            )
+    else:
+        for i in range(0, len(startdate_list)):
+            modified_startdate_list.append(startdate_list[i])
+
+    return modified_startdate_list
 
 
-def generate_enddate_list(resume_config_file: str) -> list[str]:
+def generate_enddate_list(resume_config_file: str,
+                            date_format: str | None) -> list[str]:
     """Retrieve the list of company end dates from the
     resume configuration file.
 
+
     Args:
         resume_config_file (str): Path to resume configuration file.
+        date_format (str | None, optional): Date format. Must be "yyyy/MM",
+            "MM/yyyy", "yyyy/MM/dd", or "MM/dd/yyyy". Defaults to "MM/dd/yyyy".
 
     Returns:
         list[str]: List of company end dates.
@@ -102,8 +132,29 @@ def generate_enddate_list(resume_config_file: str) -> list[str]:
     enddate_list: list[str] = list_enddates(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
+    modified_enddate_list: list[str] = []
 
-    return enddate_list
+    if date_format == "yyyy/MM":
+        for i in range(0, len(enddate_list)):
+            modified_enddate_list.append(
+                    f"{enddate_list[i][-4:]}/{enddate_list[i][:2]}"
+            )
+    elif date_format == "MM/yyyy":
+        for i in range(0, len(enddate_list)):
+            modified_enddate_list.append(
+                    f"{enddate_list[i][:2]}/{enddate_list[i][-4:]}"
+            )
+    elif date_format == "yyyy/MM/dd":
+        for i in range(0, len(enddate_list)):
+            day = re.search(r"\/(.*?)\/", enddate_list[i]).group(1)
+            modified_enddate_list.append(
+                    f"{enddate_list[i][-4:]}/{enddate_list[i][:2]}/{day}"
+            )
+    else:
+        for i in range(0, len(enddate_list)):
+            modified_enddate_list.append(enddate_list[i])
+
+    return modified_enddate_list
 
 
 def generate_jobtitle_list(resume_config_file: str) -> list[str]:
@@ -230,6 +281,7 @@ class TkinterApp(tk.Tk):
             enddate_list: list[str] | None,
             jobtitle_list: list[str] | None,
             description_list: list[str] | None,
+            date_format: str | None,
             *args,
             **kwargs
     ):
@@ -247,12 +299,14 @@ class TkinterApp(tk.Tk):
 
         if startdate_list is None:
             startdate_list = generate_startdate_list(
-                    resume_config_file="resume.toml"
+                    resume_config_file="resume.toml",
+                    date_format=date_format
             )
 
         if enddate_list is None:
             enddate_list = generate_enddate_list(
-                    resume_config_file="resume.toml"
+                    resume_config_file="resume.toml",
+                    date_format=date_format
             )
 
         if jobtitle_list is None:
@@ -481,9 +535,10 @@ def run_gui(
         startdate_list: str = "resume.toml",
         enddate_list: str = "resume.toml",
         jobtitle_list: str = "resume.toml",
-        description_list: str = "resume.toml"
+        description_list: str = "resume.toml",
+        date_format: str | None = None,
 ):
-    """Runs the GUI application.
+    """_summary_
 
     Args:
         company_list (str, optional): List of companies. Defaults
@@ -498,14 +553,23 @@ def run_gui(
             Defaults to "resume.toml".
         description_list (str, optional): List of company job descriptions.
             Defaults to "resume.toml".
+        date_format (str | None, optional): Date format. Must be "yyyy/MM",
+            "MM/yyyy", "yyyy/MM/dd", or "MM/dd/yyyy". Defaults to "MM/dd/yyyy".
     """
     app = TkinterApp(
             company_list=generate_company_list(company_list),
             location_list=generate_location_list(location_list),
-            startdate_list=generate_startdate_list(startdate_list),
-            enddate_list=generate_enddate_list(enddate_list),
+            startdate_list=generate_startdate_list(
+                    startdate_list,
+                    date_format=date_format
+            ),
+            enddate_list=generate_enddate_list(
+                    enddate_list,
+                    date_format=date_format
+            ),
             jobtitle_list=generate_jobtitle_list(jobtitle_list),
-            description_list=generate_description_list(description_list)
+            description_list=generate_description_list(description_list),
+            date_format=date_format
     )
 
     app.geometry("900x450")

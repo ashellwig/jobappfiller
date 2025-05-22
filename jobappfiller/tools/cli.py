@@ -45,5 +45,16 @@ def cli_print_companies(file: str):
 
 @click.command()
 @click.option("-f", "--file", type=str, help="Path to resume config file.")
-def cli_run_gui(file: str):
-    run_gui(company_list=file, description_list=file)
+@click.option(
+        "--datefmt",
+        is_flag=False,
+        flag_value="",
+        type=str,
+        help="yyyy/MM, MM/yyyy, or None"
+)
+def cli_run_gui(file: str, datefmt: str):
+    if datefmt == "" or datefmt is None:
+        datefmt = None
+        run_gui(company_list=file, description_list=file, date_format=datefmt)
+    else:
+        run_gui(company_list=file, description_list=file, date_format=datefmt)
