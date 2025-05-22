@@ -71,31 +71,120 @@ This way, you can make **many** of these configuration files to adjust your
 experience descriptions on a per-application basis by specifying the resume
 configuration file.
 
-### Building
+#### Configuration Example
+
+Just to illustrate how to use the configuration file format, here is the top
+two experience entries I personally have in my default resume TOML
+configuration at `resume.toml`:
+
+```toml
+[[default]]
+
+[[default.experience]]
+name = "TAKKION (TP&L Management Solutions)"
+location = "Broomfield, CO"
+startdate = "09/01/2023"
+enddate = "03/01/2025"
+jobtitle = "IT Cloud Developer"
+description = """\
+    Migrate C#/.NET and Python Applucations to the GCP/Azure \
+    cloud environment. Implement automated account provisioning on Microsoft \
+    Azure Entra ID through Paylocity's API with serverless \
+    functions and webhooks.\
+    """
+
+[[default.experience]]
+name = "American Express"
+location = "Phoenix, AZ"
+startdate = "07/01/2022"
+enddate = "09/01/2023"
+jobtitle = "Python & SQL Developer"
+description = """\
+    Migrate massive dataset from Teradata to Hive and ensure 1:1 mapping \
+    of rules and regulatory reports through TSQL to Hive SQL. Utilize GCP, \
+    AWS, JFrog, and Jira for CI/CD. Written a Python package to pull HiveQL \
+    Query results and format them using a personally written Python package \
+    for CornerStone to convert the data into XML format for reporting \
+    requirements as requested by FR, MX, IT, and NL. Utilize Azure cloud \
+    functions and Spring Boot for microservices. ETL pipelines. SQLAlchemy \
+    library for interaction with Python and C#/.NET.\
+    """
+```
+
+### Installing
 
 This application has only been tested with `Python 3.13.2` on
 `Arch Linux (v6.14.6-arch1-1)`. If you are using other platforms and experience
 issues, please open a request.
 
 Assuming you are already in the source directory of the repository and
-have completed your configuration, simply build the package with pip.
+have completed your configuration, simply build the package with `pip`
+or `pyinstaller` depending on if you wish to build the development Python
+package (`pip`) or a distributable executable file of the CLI (`pyinstaller`).
+
+#### Installing with Local Repo
 
 ```bash
+# Installing with `pip --install --editable .`.
 python -m venv .venv
 source ./.venv/bin/activate
 python -m pip install -r requirements.txt  # Probably unnecessary.
 python -m pip install --editable .
+
+# Installing by building the executable locally.
+# Run the above commands, then run:
+pyinstaller \
+    --onefile \
+    --icon=./jobappfiller/resources/favicon.ico \
+    --name jobappfiller-cli \
+    --collect-all jobappfiller \
+    ./jobappfiller/cli.py
+```
+
+#### Installing by downloading the latest release
+
+Either visit the [latest release] page on github or use the following script
+(also found at [download_latest_release.sh](download_latest_release.sh))
+
+```bash
+latest_release="releases/latest/download/jobappfiller-cli"
+if type "wget" >/dev/null; then
+    wget "https://github.com/ashellwig/jobappfiller/${latest_release}"
+    chmod +x ./jobappfiller
+    echo -e "\033[1,32mSuccessfully downloaded ${latest_release}\033[0m"
+elif type "curl" >/dev/null; then
+    echo -e "\033[1,33mUsing curl to download ${latest_release}\033[0m"
+    curl \
+        -L "https://github.com/ashellwig/jobappfiller/${latest_release}" \
+        >jobappfiller
+    chmod +x ./jobappfiller
+    echo -e "\033[1,32mSuccessfully downloaded ${latest_release}\033[0m"
+else
+    echo -e "\033[1,31mPlease install either wget or curl.\033[0m"
+    exit 1
+fi
 ```
 
 Then you are ready to run!
 
-### Running
+#### Running
+
+To run the GUI, after installing or downloading the [latest release] simply:
 
 ```bash
-jobappfiller gui -f resume.toml
+# Installed with `pip --install --editable .`.
+jobappfiller gui -f resume.toml --datefmt "MM/dd/yyyy"
+
+# Installed by locally building the execuatable.
+./dist/jobappfiller-cli gui -f resume.toml -datefmt "MM/dd/yyyy"
+
+# Installed with downloaded release.
+${DOWNLOAD_PATH}/jobappfiller gui -f resume.toml --datefmt "MM/dd/yyyy"
 ```
 
 This will open the GUI for your specified configuration. If you have many
-experience listings, remove the line `app.geometry("900x350")` in the
+experience listings, remove the line `app.geometry("900x450")` in the
 [app.py](jobappfiller/tools/app.py) in the `run_gui()` function, or adjust
 it to your liking.
+
+[latest release]: https://github.com/ashellwig/jobappfiller/releases/latest

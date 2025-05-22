@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -13,15 +15,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-[[default]]
-name = "Default"
+latest_release="releases/latest/download/jobappfiller"
 
-[[default.experience]]
-name = ""
-location = ""
-startdate = "" # Use MM/dd/yyyy format.
-enddate = ""  # Use MM/dd/yyyy format.
-jobtitle = ""
-description = """\
-    Begin job description here.\
-    """
+if type "wget" >/dev/null; then
+    wget "https://github.com/ashellwig/jobappfiller/${latest_release}"
+    chmod +x ./jobappfiller
+    echo -e "\033[1,32mSuccessfully downloaded ${latest_release}\033[0m"
+elif type "curl" >/dev/null; then
+    echo -e "\033[1,33mUsing curl to download ${latest_release}\033[0m"
+    curl \
+        -L "https://github.com/ashellwig/jobappfiller/${latest_release}" \
+        >jobappfiller
+    chmod +x ./jobappfiller
+    echo -e "\033[1,32mSuccessfully downloaded ${latest_release}\033[0m"
+else
+    echo -e "\033[1,31mPlease install either wget or curl.\033[0m"
+    exit 1
+fi

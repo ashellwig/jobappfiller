@@ -26,7 +26,7 @@ authors = [
     {name = "Ash Hellwig", email = "ahellwig.dev@gmail.com"}
 ]
 description = "Automatically fill in experience for online job applications."
-version = "0.1.0"
+version = "1.0.0"
 readme = "README.md"
 requires-python = ">= 3.13"
 keywords = ["selenium", "browser", "cli"]
@@ -34,6 +34,7 @@ license = "AGPL-3.0"
 dependencies = [
     "click==8.2.0",
     "pydocstyle==6.3.0",
+    "pyinstaller==6.13.0",
     "pylint==3.3.7",
     "pyperclip==1.9.0",
     "pytest==8.3.5",
