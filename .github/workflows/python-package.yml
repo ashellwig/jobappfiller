@@ -55,6 +55,6 @@ jobs:
       with:
         dist_dir: "dist"
         build: true
-        gpg_key: ${{ secrets.PYPI_GPG_KEY }}
+        # gpg_key: ${{ secrets.PYPI_GPG_KEY }}
         password: ${{ secrets.PYPI_KEY }}
         skip_existing: true
