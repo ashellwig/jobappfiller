@@ -125,7 +125,7 @@ package (`pip`) or a distributable executable file of the CLI (`pyinstaller`).
 #### Installing with Local Repo
 
 ```bash
-# Installing with `pip --install --editable .`.
+# Installing with `pip install --editable .`.
 python -m venv .venv
 source ./.venv/bin/activate
 python -m pip install -r requirements.txt  # Probably unnecessary.
@@ -173,7 +173,7 @@ Then you are ready to run!
 To run the GUI, after installing or downloading the [latest release] simply:
 
 ```bash
-# Installed with `pip --install --editable .`.
+# Installed with `pip install --editable .`.
 jobappfiller gui -f resume.toml --datefmt "MM/dd/yyyy"
 
 # Installed by locally building the execuatable.
