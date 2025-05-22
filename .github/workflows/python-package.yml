@@ -22,6 +22,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -56,4 +58,3 @@ jobs:
         gpg_key: ${{ secrets.PYPI_GPG_KEY }}
         password: ${{ secrets.PYPI_KEY }}
         skip_existing: true
-        upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
