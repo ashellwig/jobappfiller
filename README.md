@@ -87,7 +87,7 @@ startdate = "09/01/2023"
 enddate = "03/01/2025"
 jobtitle = "IT Cloud Developer"
 description = """\
-    Migrate C#/.NET and Python Applucations to the GCP/Azure \
+    Migrate C#/.NET and Python Applications to the GCP/Azure \
     cloud environment. Implement automated account provisioning on Microsoft \
     Azure Entra ID through Paylocity's API with serverless \
     functions and webhooks.\
