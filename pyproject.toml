@@ -26,7 +26,7 @@ authors = [
     {name = "Ash Hellwig", email = "ahellwig.dev@gmail.com"}
 ]
 description = "Automatically fill in experience for online job applications."
-version = "1.0.0"
+version = "1.1.0"
 readme = "README.md"
 requires-python = ">= 3.13"
 keywords = ["selenium", "browser", "cli"]
@@ -156,6 +156,7 @@ disable = [
     "trailing-newlines",
     "unichr-builtin",
     "unicode-builtin",
+    "unnecessary-lambda-assignment",
     "unnecessary-pass",
     "unpacking-in-except",
     "useless-else-on-loop",

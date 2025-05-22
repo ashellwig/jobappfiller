@@ -36,355 +36,146 @@ from jobappfiller.util.logger import setup_logger
 
 LARGEFONT = ("calibri", 36, tk_font.BOLD)
 SMALLFONT = ("calibri", 14, tk_font.NORMAL)
-
 logger = setup_logger(log_file=None)
 
 
-def generate_company_list(resume_config_file: str) -> list[str]:
-    """Retrieve the list of companies from the resume configuration file.
+class DataGenerator:
+    """Handles data generation from resume configuration file."""
 
-    Args:
-        resume_config_file (str): Path to resume configuration file.
+    def __init__(self, resume_config_file: str):
+        self.resume_data = parse_resume(resume_config_file)
 
-    Returns:
-        list[str]: List of companies names under experience.
-    """
-    company_list: list[str] = list_companies(
-            resume_data=parse_resume(resume_config_file=resume_config_file)
-    )
+    def get_companies(self) -> list[str]:
+        return list_companies(self.resume_data)
 
-    return company_list
+    def get_locations(self) -> list[str]:
+        return list_locations(self.resume_data)
 
+    def get_jobtitles(self) -> list[str]:
+        return list_jobtitles(self.resume_data)
 
-def generate_location_list(resume_config_file: str) -> list[str]:
-    """Retrieve the list of company locations from the
-    resume configuration file.
+    def get_descriptions(self) -> list[str]:
+        return list_descriptions(self.resume_data)
 
-    Args:
-        resume_config_file (str): Path to resume configuration file.
+    def get_dates(self, date_list_func, date_format: str) -> list[str]:
+        dates = date_list_func(self.resume_data)
+        date_delim = \
+            "/" if "/" in date_format else "-" if "-" in date_format else "/"
+        modified_dates = []
 
-    Returns:
-        list[str]: List of company locations.
-    """
-    location_list: list[str] = list_locations(
-            resume_data=parse_resume(resume_config_file=resume_config_file)
-    )
-
-    return location_list
-
-
-def generate_startdate_list(resume_config_file: str,
-                            date_format: str | None) -> list[str]:
-    """Retrieve the list of company start dates from the
-    resume configuration file.
-
-
-    Args:
-        resume_config_file (str): Path to resume configuration file.
-        date_format (str | None, optional): Date format. Must be
-            ["yyyy/MM" | "yyyy-MM"], ["MM/yyyy" | "MM-yyyy"],
-            ["yyyy/MM/dd" | "yyyy-MM-dd"], or ["MM/dd/yyyy" | "MM-dd-yyyy"].
-            Defaults to "MM/dd/yyyy".
-
-    Returns:
-        list[str]: List of company start dates.
-    """
-    startdate_list: list[str] = list_startdates(
-            resume_data=parse_resume(resume_config_file=resume_config_file)
-    )
-    date_delim: str = \
-        "/" if "/" in date_format else "-" if "-" in date_format else "/"
-    modified_startdate_list: list[str] = []
-
-    if date_format == "yyyy/MM" or date_format == "yyyy-MM":
-        for i in range(0, len(startdate_list)):
-            modified_startdate_list.append(
-                    f"{startdate_list[i][-4:]}{date_delim}"
-                    f"{startdate_list[i][:2]}"
-            )
-    elif date_format == "MM/yyyy" or date_format == "MM-yyyy":
-        for i in range(0, len(startdate_list)):
-            modified_startdate_list.append(
-                    f"{startdate_list[i][:2]}{date_delim}"
-                    f"{startdate_list[i][-4:]}"
-            )
-    elif date_format == "yyyy/MM/dd" or date_format == "yyyy-MM-dd":
-        for i in range(0, len(startdate_list)):
-            day = re.search(r"\/(.*?)\/", startdate_list[i]).group(1)
-            modified_startdate_list.append(
-                    f"{startdate_list[i][-4:]}{date_delim}"
-                    f"{startdate_list[i][:2]}{date_delim}{day}"
-            )
-    else:
-        for i in range(0, len(startdate_list)):
-            modified_startdate_list.append(startdate_list[i])
-
-    return modified_startdate_list
+        for date_str in dates:
+            if date_format in ["yyyy/MM", "yyyy-MM"]:
+                modified = f"{date_str[-4:]}{date_delim}{date_str[:2]}"
+            elif date_format in ["MM/yyyy", "MM-yyyy"]:
+                modified = f"{date_str[:2]}{date_delim}{date_str[-4:]}"
+            elif date_format in ["yyyy/MM/dd", "yyyy-MM-dd"]:
+                day = re.search(r"\/(.*?)\/", date_str).group(1)
+                modified = \
+                    f"{date_str[-4:]}{date_delim}" \
+                    f"{date_str[:2]}{date_delim}{day}"
+            else:
+                modified = date_str
+            modified_dates.append(modified)
+        return modified_dates
 
 
-def generate_enddate_list(resume_config_file: str,
-                            date_format: str | None) -> list[str]:
-    """Retrieve the list of company end dates from the
-    resume configuration file.
+class ClipboardHandler:
+    """Handles clipboard operations for button clicks."""
+
+    @staticmethod
+    def copy_attribute(event, attribute: str):
+        """Copies specified attribute from the event's widget master."""
+        value = getattr(event.widget.master, attribute)
+        pyperclip.copy(value)
+        logger.info(
+                "Copying %s for: %s",
+                attribute,
+                event.widget.master.company_name
+        )
+        logger.info("%s = %s", attribute, value)
 
 
-    Args:
-        resume_config_file (str): Path to resume configuration file.
-        date_format (str | None, optional): Date format. Must be
-            ["yyyy/MM" | "yyyy-MM"], ["MM/yyyy" | "MM-yyyy"],
-            ["yyyy/MM/dd" | "yyyy-MM-dd"], or ["MM/dd/yyyy" | "MM-dd-yyyy"].
-            Defaults to "MM/dd/yyyy".
-
-    Returns:
-        list[str]: List of company end dates.
-    """
-    enddate_list: list[str] = list_enddates(
-            resume_data=parse_resume(resume_config_file=resume_config_file)
-    )
-    date_delim: str = \
-        "/" if "/" in date_format else "-" if "-" in date_format else "/"
-    modified_enddate_list: list[str] = []
-
-    if date_format == "yyyy/MM" or date_format == "yyyy-MM":
-        for i in range(0, len(enddate_list)):
-            modified_enddate_list.append(
-                    f"{enddate_list[i][-4:]}{date_delim}"
-                    f"{enddate_list[i][:2]}"
-            )
-    elif date_format == "MM/yyyy" or date_format == "MM-yyyy":
-        for i in range(0, len(enddate_list)):
-            modified_enddate_list.append(
-                    f"{enddate_list[i][:2]}{date_delim}"
-                    f"{enddate_list[i][-4:]}"
-            )
-    elif date_format == "yyyy/MM/dd" or date_format == "yyyy-MM-dd":
-        for i in range(0, len(enddate_list)):
-            day = re.search(r"\/(.*?)\/", enddate_list[i]).group(1)
-            modified_enddate_list.append(
-                    f"{enddate_list[i][-4:]}{date_delim}"
-                    f"{enddate_list[i][:2]}{date_delim}{day}"
-            )
-    else:
-        for i in range(0, len(enddate_list)):
-            modified_enddate_list.append(enddate_list[i])
-
-    return modified_enddate_list
-
-
-def generate_jobtitle_list(resume_config_file: str) -> list[str]:
-    """Retrieve the list of job titles from the resume configuration file.
-
-    Args:
-        resume_config_file (str): Path to resume configuration file.
-
-    Returns:
-        list[str]: List of company job titles.
-    """
-    jobtitle_list: list[str] = list_jobtitles(
-            resume_data=parse_resume(resume_config_file=resume_config_file)
-    )
-
-    return jobtitle_list
-
-
-def generate_description_list(resume_config_file: str) -> list[str]:
-    """Retrieve the list of company job descriptions from the
-    resume configuration file.
-
-    Args:
-        resume_config_file (str): Path to resume configuration file.
-
-    Returns:
-        list[str]: List of company job descriptions.
-    """
-    description_list: list[str] = list_descriptions(
-            resume_data=parse_resume(resume_config_file=resume_config_file)
-    )
-
-    return description_list
-
-
-def button_click_company_name(event):
-    """Copies the name of the company from experience to the clipboard.
-
-    Args:
-        event (tkinter.EventType.ButtonPress): Event caused by
-        pressing the Company Name button.
-    """
-    pyperclip.copy(f"{event.widget.master.company_name}")
-    logger.info(
-            "Copying Company Name for: %s",
-            event.widget.master.company_name
-    )
-    logger.info("location = %s", event.widget.master.company_name)
-
-
-def button_click_location(event):
-    """Copies the location of the experience to the clipboard.
-
-    Args:
-        event (tkinter.EventType.ButtonPress): Event caused by
-        pressing the Location button.
-    """
-    pyperclip.copy(f"{event.widget.master.location}")
-    logger.info("Copying location for: %s", event.widget.master.company_name)
-    logger.info("location = %s", event.widget.master.location)
-
-
-def button_click_startdate(event):
-    """Copies the startdate of the experience to the clipboard.
-
-    Args:
-        event (tkinter.EventType.ButtonPress): Event caused by
-        pressing the Start Date button.
-    """
-    pyperclip.copy(f"{event.widget.master.startdate}")
-    logger.info("Copying description for: %s", event.widget.master.company_name)
-    logger.info("startdate = %s", event.widget.master.startdate)
-
-
-def button_click_enddate(event):
-    """Copies the enddate of the experience to the clipboard.
-
-    Args:
-        event (tkinter.EventType.ButtonPress): Event caused by
-        pressing the End Date button.
-    """
-    pyperclip.copy(f"{event.widget.master.enddate}")
-    logger.info("Copying description for: %s", event.widget.master.company_name)
-    logger.info("enddate = %s", event.widget.master.enddate)
-
-
-def button_click_jobtitle(event):
-    """Copies the jobtitle of the experience to the clipboard.
-
-    Args:
-        event (tkinter.EventType.ButtonPress): Event caused by
-        pressing the Job Title button.
-    """
-    pyperclip.copy(f"{event.widget.master.jobtitle}")
-    logger.info("Copying description for: %s", event.widget.master.company_name)
-    logger.info("jobtitle = %s", event.widget.master.jobtitle)
-
-
-def button_click_description(event):
-    """Copies the description of the experience to the clipboard.
-
-    Args:
-        event (tkinter.EventType.ButtonPress): Event caused by
-        pressing the Description button.
-    """
-    pyperclip.copy(f"{event.widget.master.description}")
-    logger.info("Copying description for: %s", event.widget.master.company_name)
-    logger.info("Description = %s", event.widget.master.description)
+# Generate all the button click handlers for company info.
+button_click_company_name = lambda event: ClipboardHandler.copy_attribute(
+        event, "company_name"
+)
+button_click_location = lambda event: ClipboardHandler.copy_attribute(
+        event, "location"
+)
+button_click_startdate = lambda event: ClipboardHandler.copy_attribute(
+        event, "startdate"
+)
+button_click_enddate = lambda event: ClipboardHandler.copy_attribute(
+        event, "enddate"
+)
+button_click_jobtitle = lambda event: ClipboardHandler.copy_attribute(
+        event, "jobtitle"
+)
+button_click_description = lambda event: ClipboardHandler.copy_attribute(
+        event, "description"
+)
 
 
 class TkinterApp(tk.Tk):
-    """Top-level app that serves the purpose of switching frames between each
-    company selected.
-
-    Args:
-        tk (tkinter.Tk): The main Tkinter window.
+    """
+    Top-level app that serves the purpose of switching frames between each
+        company selected.
     """
 
     def __init__(
             self,
-            company_list: list[str] | None,
-            location_list: list[str] | None,
-            startdate_list: list[str] | None,
-            enddate_list: list[str] | None,
-            jobtitle_list: list[str] | None,
-            description_list: list[str] | None,
-            date_format: str | None,
             *args,
+            resume_config_file: str = "resume.toml",
+            date_format: str | None = None,
             **kwargs
     ):
         tk.Tk.__init__(self, *args, **kwargs)
+        data_gen = DataGenerator(resume_config_file)
 
-        if company_list is None:
-            company_list = generate_company_list(
-                    resume_config_file="resume.toml"
-            )
+        # Generate accessible data from the `resume_config_file`.
+        company_list = data_gen.get_companies()
+        location_list = data_gen.get_locations()
+        jobtitle_list = data_gen.get_jobtitles()
+        description_list = data_gen.get_descriptions()
+        startdate_list = data_gen.get_dates(list_startdates, date_format)
+        enddate_list = data_gen.get_dates(list_enddates, date_format)
 
-        if location_list is None:
-            location_list = generate_location_list(
-                    resume_config_file="resume.toml"
-            )
-
-        if startdate_list is None:
-            startdate_list = generate_startdate_list(
-                    resume_config_file="resume.toml",
-                    date_format=date_format
-            )
-
-        if enddate_list is None:
-            enddate_list = generate_enddate_list(
-                    resume_config_file="resume.toml",
-                    date_format=date_format
-            )
-
-        if jobtitle_list is None:
-            jobtitle_list = generate_jobtitle_list(
-                    resume_config_file="resume.toml"
-            )
-
-        if description_list is None:
-            description_list = generate_description_list(
-                    resume_config_file="resume.toml"
-            )
-
+        # Setup containers.
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
-
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
         self.company_pages = []
 
-        for i in range(0, len(company_list)):
-            self.company_pages.append(
-                    CompanyPage(
-                            container,
-                            self,
-                            company_name=company_list[i],
-                            location=location_list[i],
-                            startdate=startdate_list[i],
-                            enddate=enddate_list[i],
-                            jobtitle=jobtitle_list[i],
-                            description=description_list[i]
-                    )
-            )
-
-        startpage_frame = StartPage(container, self, company_list=company_list)
+        # Create StartPage frame
+        startpage_frame = StartPage(
+                parent=container,
+                controller=self,
+                company_list=company_list
+        )
         self.frames[0] = startpage_frame
-        startpage_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        startpage_frame.grid_rowconfigure(0, weight=1)
-        startpage_frame.grid_columnconfigure(0, weight=1)
-        startpage_frame.grid_columnconfigure(1, weight=1)
-        startpage_frame.grid_columnconfigure(2, weight=1)
+        startpage_frame.grid(row=0, column=0, sticky="nsew")
 
-        for i in range(0, len(company_list)):
+        # Create CompanyPage frames
+        for idx, company in enumerate(company_list):
             frame = CompanyPage(
-                    container,
-                    self,
-                    company_list[i],
-                    location=location_list[i],
-                    startdate=startdate_list[i],
-                    enddate=enddate_list[i],
-                    jobtitle=jobtitle_list[i],
-                    description=description_list[i]
+                    parent=container,
+                    controller=self,
+                    company_name=company,
+                    location=location_list[idx],
+                    startdate=startdate_list[idx],
+                    enddate=enddate_list[idx],
+                    jobtitle=jobtitle_list[idx],
+                    description=description_list[idx]
             )
-            self.frames[i + 1] = frame
-            frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-            frame.grid_rowconfigure(0, weight=1)
-            frame.grid_columnconfigure(0, weight=1)
-            frame.grid_columnconfigure(1, weight=1)
-            frame.grid_columnconfigure(2, weight=1)
+            self.frames[idx + 1] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame(cont=0)
 
-    def show_frame(self, cont):
+    def show_frame(self, cont: int):
         """Shows the frame of the specified job.
 
         Args:
@@ -395,199 +186,126 @@ class TkinterApp(tk.Tk):
 
 
 class StartPage(tk.Frame):
-    """The homepage of the GUI application, listing all the companies found
-    in the user's provided configuration file.
-
-    Args:
-        tk (tkinter.Frame): Widget for a `tkinter.Frame`.
+    """
+    The homepage of the GUI application, listing all the companies found
+        in the user's provided configuration file.
     """
 
-    def __init__(self, parent, controller, company_list: list[str] | None):
+    def __init__(self, parent, controller, company_list: list[str]):
         tk.Frame.__init__(self, parent)
 
-        if company_list is None:
-            company_list = generate_company_list(
-                    resume_config_file="resume.toml"
-            )
-
-        # Frame Label (App Title)
+        # UI setup
         label = ttk.Label(self, text="Job Application Filler", font=LARGEFONT)
         label.grid(row=0, column=1, padx=5, pady=5)
 
-        # Separator
         separator = ttk.Separator(self, orient="horizontal")
-        separator.grid(
-                row=1,
-                column=0,
-                columnspan=3,
-                sticky="ew",
-                padx=5,
-                pady=0
-        )
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_rowconfigure(3, weight=1)
-        self.grid_rowconfigure(4, weight=1)
-        self.grid_rowconfigure(5, weight=1)
-        self.grid_rowconfigure(6, weight=1)
-        self.grid_rowconfigure(7, weight=1)
-        self.grid_rowconfigure(8, weight=1)
+        separator.grid(row=1, column=0, columnspan=3, sticky="ew", padx=5)
 
-        # Company Navigation Buttons
-        for i in range(0, len(company_list)):
-            button = ttk.Button(
+        # Configure grid layout
+        for col in range(3):
+            self.grid_columnconfigure(col, weight=1)
+        for row in range(9):
+            self.grid_rowconfigure(row, weight=1)
+
+        # Company navigation buttons
+        for idx, company in enumerate(company_list):
+            ttk.Button(
                     self,
-                    text=f"{company_list[i]}",
+                    text=company,
                     width=60,
-                    style=ttk.Style().configure(".",
-                                                font=SMALLFONT),
-                    command=lambda i=i + 1: controller.show_frame(cont=i)
-            )
-            button.grid(row=(i + 1) + 1, column=1, padx=5, pady=5)
+                    style="TButton",
+                    command=lambda idx=idx + 1: controller.show_frame(idx)
+            ).grid(row=idx + 2,
+                    column=1,
+                    padx=5,
+                    pady=5)
 
 
 class CompanyPage(tk.Frame):
-    """Page containing the information for each listed experience and a button
-    to copy each field to the clipboard.
+    """Page showing detailed company information and copy buttons."""
 
-    Args:
-        tk (tkinter.Frame): Widget for a `tkinter.Frame`.
-    """
-
-    def __init__(
-            self,
-            parent,
-            controller,
-            company_name,
-            location,
-            startdate,
-            enddate,
-            jobtitle,
-            description
-    ):
+    def __init__(self, parent, controller, **kwargs):
         tk.Frame.__init__(self, parent)
-        self.company_name = company_name
-        self.location = location
-        self.startdate = startdate
-        self.enddate = enddate
-        self.jobtitle = jobtitle
-        self.description = description
 
-        # Company Name Label
-        label = ttk.Label(self, text=self.company_name, font=LARGEFONT)
-        label.grid(row=0, column=1, padx=5, pady=5)
+        # Store company data as instance attributes
+        self.company_name = kwargs["company_name"]
+        self.location = kwargs["location"]
+        self.startdate = kwargs["startdate"]
+        self.enddate = kwargs["enddate"]
+        self.jobtitle = kwargs["jobtitle"]
+        self.description = kwargs["description"]
 
-        # Separator before the buttons
-        separator = ttk.Separator(self, orient="horizontal")
-        separator.grid(
-                row=1,
-                column=0,
-                columnspan=3,
-                sticky="ew",
-                padx=5,
-                pady=0
-        )
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_rowconfigure(3, weight=1)
-        self.grid_rowconfigure(4, weight=1)
-        self.grid_rowconfigure(5, weight=1)
-        self.grid_rowconfigure(6, weight=1)
-        self.grid_rowconfigure(7, weight=1)
-        self.grid_rowconfigure(8, weight=1)
+        # UI elements
+        ttk.Label(
+                self,
+                text=self.company_name,
+                font=LARGEFONT
+        ).grid(row=0,
+                column=1)
+        ttk.Separator(self).grid(row=1, column=0, columnspan=3, sticky="ew")
 
-        # Company Name Button
-        company_name_button = ttk.Button(self, text="Copy Company Name")
-        company_name_button.bind("<Button-1>", button_click_company_name)
-        company_name_button.grid(row=2, column=1, padx=5, pady=5)
+        # Configure grid layout
+        for col in range(3):
+            self.grid_columnconfigure(col, weight=1)
+        for row in range(9):
+            self.grid_rowconfigure(row, weight=1)
 
-        # Location Button
-        location_button = ttk.Button(self, text="Copy Location")
-        location_button.bind("<Button-1>", button_click_location)
-        location_button.grid(row=3, column=1, padx=5, pady=5)
+        # Create the buttons corresponding to the configured company data.
+        buttons = [("Company Name",
+                    button_click_company_name,
+                    2),
+                    ("Location",
+                        button_click_location,
+                        3),
+                    ("Start Date",
+                        button_click_startdate,
+                        4),
+                    ("End Date",
+                        button_click_enddate,
+                        5),
+                    ("Job Title",
+                        button_click_jobtitle,
+                        6),
+                    ("Description",
+                        button_click_description,
+                        7)]
 
-        # Start Date Button
-        startdate_button = ttk.Button(self, text="Copy Start Date")
-        startdate_button.bind("<Button-1>", button_click_startdate)
-        startdate_button.grid(row=4, column=1, padx=5, pady=5)
+        # Create the button handlers corresponding to the
+        # configured company data.
+        for text, handler, row in buttons:
+            btn = ttk.Button(self, text=text)
+            btn.bind("<Button-1>", handler)
+            btn.grid(row=row, column=1, padx=5, pady=5)
 
-        # End Date Button
-        enddate_button = ttk.Button(self, text="Copy End Date")
-        enddate_button.bind("<Button-1>", button_click_enddate)
-        enddate_button.grid(row=5, column=1, padx=5, pady=5)
-
-        # Job Title Button
-        jobtitle_button = ttk.Button(self, text="Copy Job Title")
-        jobtitle_button.bind("<Button-1>", button_click_jobtitle)
-        jobtitle_button.grid(row=6, column=1, padx=5, pady=5)
-
-        # Description Button
-        description_button = ttk.Button(self, text="Copy Description")
-        description_button.bind("<Button-1>", button_click_description)
-        description_button.grid(row=7, column=1, padx=5, pady=5)
-
-        # Return to Start Page Button
-        startpage_button = ttk.Button(
+        # Return to "StartPage" button.
+        ttk.Button(
                 self,
                 text="Start Page",
-                command=lambda: controller.show_frame(cont=0)
-        )
-        startpage_button.grid(row=8, column=1, padx=5, pady=5)
+                command=lambda: controller.show_frame(0)
+        ).grid(row=8,
+                column=1,
+                padx=5,
+                pady=5)
 
 
 def run_gui(
-        company_list: str = "resume.toml",
-        location_list: str = "resume.toml",
-        startdate_list: str = "resume.toml",
-        enddate_list: str = "resume.toml",
-        jobtitle_list: str = "resume.toml",
-        description_list: str = "resume.toml",
-        date_format: str | None = None,
+        resume_config_file: str = "resume.toml",
+        date_format: str | None = None
 ):
-    """_summary_
+    """Main function to run the GUI.
 
     Args:
-        company_list (str, optional): List of companies. Defaults
-            to "resume.toml".
-        location_list (str, optional): List of company locations.
-            Defaults to "resume.toml".
-        startdate_list (str, optional): List of start dates.
-            Defaults to "resume.toml".
-        enddate_list (str, optional): List of end dates.
-            Defaults to "resume.toml".
-        jobtitle_list (str, optional): List of job titles.
-            Defaults to "resume.toml".
-        description_list (str, optional): List of company job descriptions.
-            Defaults to "resume.toml".
+        resume_config_file (str, optional): Path to resume config file in TOML
+            format as a string. Defaults to "resume.toml".
         date_format (str | None, optional): Date format. Must be "yyyy/MM",
             "MM/yyyy", "yyyy/MM/dd", or "MM/dd/yyyy". Defaults to "MM/dd/yyyy".
     """
+
     app = TkinterApp(
-            company_list=generate_company_list(company_list),
-            location_list=generate_location_list(location_list),
-            startdate_list=generate_startdate_list(
-                    startdate_list,
-                    date_format=date_format
-            ),
-            enddate_list=generate_enddate_list(
-                    enddate_list,
-                    date_format=date_format
-            ),
-            jobtitle_list=generate_jobtitle_list(jobtitle_list),
-            description_list=generate_description_list(description_list),
+            resume_config_file=resume_config_file,
             date_format=date_format
     )
-
     app.geometry("900x450")
-
     app.mainloop()
 
 

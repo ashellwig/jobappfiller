@@ -57,24 +57,4 @@ def cli_print_companies(file: str):
         "Defaults to \"MM/dd/yyyy\"."
 )
 def cli_run_gui(file: str, datefmt: str):
-    if datefmt == "" or datefmt is None:
-        datefmt = None
-        run_gui(
-                company_list=file,
-                location_list=file,
-                startdate_list=file,
-                enddate_list=file,
-                jobtitle_list=file,
-                description_list=file,
-                date_format=datefmt
-        )
-    else:
-        run_gui(
-                company_list=file,
-                location_list=file,
-                startdate_list=file,
-                enddate_list=file,
-                jobtitle_list=file,
-                description_list=file,
-                date_format=datefmt
-        )
+    run_gui(resume_config_file=file, date_format=datefmt)
