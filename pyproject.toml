@@ -23,27 +23,57 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jobappfiller"
 authors = [
-    {name = "Ash Hellwig", email = "ahellwig.dev@gmail.com"}
+    { name = "Ash Hellwig", email = "ahellwig.dev@gmail.com" },
 ]
 description = "Automatically fill in experience for online job applications."
-version = "1.1.0"
 readme = "README.md"
-requires-python = ">= 3.13"
-keywords = ["selenium", "browser", "cli"]
 license = "AGPL-3.0"
+requires-python = ">= 3.13"
+keywords = [
+    "selenium",
+    "browser",
+    "cli",
+    "jobs",
+    "application",
+    "autofill",
+    "auto-fill"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3.13"
+]
 dependencies = [
+    "build==1.2.2.post1",
     "click==8.2.0",
+    "keyring==25.6.0",
     "pydocstyle==6.3.0",
     "pyinstaller==6.13.0",
     "pylint==3.3.7",
     "pyperclip==1.9.0",
     "pytest==8.3.5",
     "rich==14.0.0",
+    "twine==6.1.0",
     "yapf==0.43.0"
 ]
+license-files = ["LICENSE"]
+version = "1.1.1"
+
+[project.urls]
+Homepage = "https://github.com/ashellwig/jobappfiller"
+Repository = "https://github.com/ashellwig/jobappfiller.git"
+Issues = "https://github.com/ashellwig/jobappfiller/issues"
 
 [project.scripts]
 jobappfiller = "jobappfiller.cli:cli"
+
+# ---- CONFIGURATION: setuptools ----
+[tool.setuptools]
+packages = ["jobappfiller", "jobappfiller.tools", "jobappfiller.util"]
+include-package-data = true
 
 # ---- CONFIGURATION: pydocstyle ----
 [tool.pydocstyle]
