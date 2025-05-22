@@ -81,8 +81,10 @@ def generate_startdate_list(resume_config_file: str,
 
     Args:
         resume_config_file (str): Path to resume configuration file.
-        date_format (str | None, optional): Date format. Must be "yyyy/MM",
-            "MM/yyyy", "yyyy/MM/dd", or "MM/dd/yyyy". Defaults to "MM/dd/yyyy".
+        date_format (str | None, optional): Date format. Must be
+            ["yyyy/MM" | "yyyy-MM"], ["MM/yyyy" | "MM-yyyy"],
+            ["yyyy/MM/dd" | "yyyy-MM-dd"], or ["MM/dd/yyyy" | "MM-dd-yyyy"].
+            Defaults to "MM/dd/yyyy".
 
     Returns:
         list[str]: List of company start dates.
@@ -90,23 +92,28 @@ def generate_startdate_list(resume_config_file: str,
     startdate_list: list[str] = list_startdates(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
+    date_delim: str = \
+        "/" if "/" in date_format else "-" if "-" in date_format else "/"
     modified_startdate_list: list[str] = []
 
-    if date_format == "yyyy/MM":
+    if date_format == "yyyy/MM" or date_format == "yyyy-MM":
         for i in range(0, len(startdate_list)):
             modified_startdate_list.append(
-                    f"{startdate_list[i][-4:]}/{startdate_list[i][:2]}"
+                    f"{startdate_list[i][-4:]}{date_delim}"
+                    f"{startdate_list[i][:2]}"
             )
-    elif date_format == "MM/yyyy":
+    elif date_format == "MM/yyyy" or date_format == "MM-yyyy":
         for i in range(0, len(startdate_list)):
             modified_startdate_list.append(
-                    f"{startdate_list[i][:2]}/{startdate_list[i][-4:]}"
+                    f"{startdate_list[i][:2]}{date_delim}"
+                    f"{startdate_list[i][-4:]}"
             )
-    elif date_format == "yyyy/MM/dd":
+    elif date_format == "yyyy/MM/dd" or date_format == "yyyy-MM-dd":
         for i in range(0, len(startdate_list)):
             day = re.search(r"\/(.*?)\/", startdate_list[i]).group(1)
             modified_startdate_list.append(
-                    f"{startdate_list[i][-4:]}/{startdate_list[i][:2]}/{day}"
+                    f"{startdate_list[i][-4:]}{date_delim}"
+                    f"{startdate_list[i][:2]}{date_delim}{day}"
             )
     else:
         for i in range(0, len(startdate_list)):
@@ -123,8 +130,10 @@ def generate_enddate_list(resume_config_file: str,
 
     Args:
         resume_config_file (str): Path to resume configuration file.
-        date_format (str | None, optional): Date format. Must be "yyyy/MM",
-            "MM/yyyy", "yyyy/MM/dd", or "MM/dd/yyyy". Defaults to "MM/dd/yyyy".
+        date_format (str | None, optional): Date format. Must be
+            ["yyyy/MM" | "yyyy-MM"], ["MM/yyyy" | "MM-yyyy"],
+            ["yyyy/MM/dd" | "yyyy-MM-dd"], or ["MM/dd/yyyy" | "MM-dd-yyyy"].
+            Defaults to "MM/dd/yyyy".
 
     Returns:
         list[str]: List of company end dates.
@@ -132,23 +141,28 @@ def generate_enddate_list(resume_config_file: str,
     enddate_list: list[str] = list_enddates(
             resume_data=parse_resume(resume_config_file=resume_config_file)
     )
+    date_delim: str = \
+        "/" if "/" in date_format else "-" if "-" in date_format else "/"
     modified_enddate_list: list[str] = []
 
-    if date_format == "yyyy/MM":
+    if date_format == "yyyy/MM" or date_format == "yyyy-MM":
         for i in range(0, len(enddate_list)):
             modified_enddate_list.append(
-                    f"{enddate_list[i][-4:]}/{enddate_list[i][:2]}"
+                    f"{enddate_list[i][-4:]}{date_delim}"
+                    f"{enddate_list[i][:2]}"
             )
-    elif date_format == "MM/yyyy":
+    elif date_format == "MM/yyyy" or date_format == "MM-yyyy":
         for i in range(0, len(enddate_list)):
             modified_enddate_list.append(
-                    f"{enddate_list[i][:2]}/{enddate_list[i][-4:]}"
+                    f"{enddate_list[i][:2]}{date_delim}"
+                    f"{enddate_list[i][-4:]}"
             )
-    elif date_format == "yyyy/MM/dd":
+    elif date_format == "yyyy/MM/dd" or date_format == "yyyy-MM-dd":
         for i in range(0, len(enddate_list)):
             day = re.search(r"\/(.*?)\/", enddate_list[i]).group(1)
             modified_enddate_list.append(
-                    f"{enddate_list[i][-4:]}/{enddate_list[i][:2]}/{day}"
+                    f"{enddate_list[i][-4:]}{date_delim}"
+                    f"{enddate_list[i][:2]}{date_delim}{day}"
             )
     else:
         for i in range(0, len(enddate_list)):

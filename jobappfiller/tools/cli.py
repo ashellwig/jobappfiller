@@ -50,7 +50,11 @@ def cli_print_companies(file: str):
         is_flag=False,
         flag_value="",
         type=str,
-        help="yyyy/MM, MM/yyyy, or None"
+        help="Date format. Must be "
+        "[\"yyyy/MM\" | \"yyyy-MM\"], [\"MM/yyyy\" | \"MM-yyyy\"], "
+        "[\"yyyy/MM/dd\" | \"yyyy-MM-dd\"], or "
+        "[\"MM/dd/yyyy\" | \"MM-dd-yyyy\"]. "
+        "Defaults to \"MM/dd/yyyy\"."
 )
 def cli_run_gui(file: str, datefmt: str):
     if datefmt == "" or datefmt is None:
