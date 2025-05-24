@@ -16,67 +16,18 @@
 the resume configuration to the clipboard in an easy-to-use menu.
 """
 
-import re
 import tkinter as tk
 import tkinter.font as tk_font
 from tkinter import ttk
 
 import pyperclip
 
-from jobappfiller.tools.parse_job_config import (
-        list_companies,
-        list_locations,
-        list_startdates,
-        list_enddates,
-        list_jobtitles,
-        list_descriptions,
-        parse_resume
-)
+from jobappfiller.tools.resume_data_gen import ResumeDataGen
 from jobappfiller.util.logger import setup_logger
 
 LARGEFONT = ("calibri", 36, tk_font.BOLD)
 SMALLFONT = ("calibri", 14, tk_font.NORMAL)
 logger = setup_logger(log_file=None)
-
-
-class DataGenerator:
-    """Handles data generation from resume configuration file."""
-
-    def __init__(self, resume_config_file: str):
-        self.resume_data = parse_resume(resume_config_file)
-
-    def get_companies(self) -> list[str]:
-        return list_companies(self.resume_data)
-
-    def get_locations(self) -> list[str]:
-        return list_locations(self.resume_data)
-
-    def get_jobtitles(self) -> list[str]:
-        return list_jobtitles(self.resume_data)
-
-    def get_descriptions(self) -> list[str]:
-        return list_descriptions(self.resume_data)
-
-    def get_dates(self, date_list_func, date_format: str) -> list[str]:
-        dates = date_list_func(self.resume_data)
-        date_delim = \
-            "/" if "/" in date_format else "-" if "-" in date_format else "/"
-        modified_dates = []
-
-        for date_str in dates:
-            if date_format in ["yyyy/MM", "yyyy-MM"]:
-                modified = f"{date_str[-4:]}{date_delim}{date_str[:2]}"
-            elif date_format in ["MM/yyyy", "MM-yyyy"]:
-                modified = f"{date_str[:2]}{date_delim}{date_str[-4:]}"
-            elif date_format in ["yyyy/MM/dd", "yyyy-MM-dd"]:
-                day = re.search(r"\/(.*?)\/", date_str).group(1)
-                modified = \
-                    f"{date_str[-4:]}{date_delim}" \
-                    f"{date_str[:2]}{date_delim}{day}"
-            else:
-                modified = date_str
-            modified_dates.append(modified)
-        return modified_dates
 
 
 class ClipboardHandler:
@@ -130,15 +81,15 @@ class TkinterApp(tk.Tk):
             **kwargs
     ):
         tk.Tk.__init__(self, *args, **kwargs)
-        data_gen = DataGenerator(resume_config_file)
+        resume_data = ResumeDataGen(resume_config_file, date_format=date_format)
 
         # Generate accessible data from the `resume_config_file`.
-        company_list = data_gen.get_companies()
-        location_list = data_gen.get_locations()
-        jobtitle_list = data_gen.get_jobtitles()
-        description_list = data_gen.get_descriptions()
-        startdate_list = data_gen.get_dates(list_startdates, date_format)
-        enddate_list = data_gen.get_dates(list_enddates, date_format)
+        company_list = resume_data.company_list
+        location_list = resume_data.location_list
+        jobtitle_list = resume_data.jobtitle_list
+        description_list = resume_data.description_list
+        startdate_list = resume_data.startdate_list
+        enddate_list = resume_data.enddate_list
 
         # Setup containers.
         container = tk.Frame(self)
