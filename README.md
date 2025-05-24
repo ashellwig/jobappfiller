@@ -144,7 +144,8 @@ pyinstaller \
 #### Installing by downloading the latest release
 
 Either visit the [latest release] page on github or use the following script
-(also found at [download_latest_release.sh](download_latest_release.sh))
+(also found at
+[scripts/download_latest_release.sh](scripts/download_latest_release.sh))
 
 ```bash
 latest_release="releases/latest/download/jobappfiller-cli"
