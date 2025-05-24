@@ -1,4 +1,4 @@
-# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)
+# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -13,7 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# This workflow will install Python dependencies, run tests, lint, then publish to pypi package index.
+# This workflow will install Python dependencies, run tests, lint, then
+# publish to pypi package index.
 
 name: Python package
 
@@ -54,7 +55,8 @@ jobs:
       uses: casperdcl/deploy-pypi@v2
       with:
         dist_dir: "dist"
-        build: true
+        build: --sdist --wheel --outdir dist .
         # gpg_key: ${{ secrets.PYPI_GPG_KEY }}
         password: ${{ secrets.PYPI_KEY }}
+        upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
         skip_existing: true
