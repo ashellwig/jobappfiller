@@ -57,7 +57,6 @@ jobs:
       with:
         dist_dir: "dist"
         build: --sdist --wheel --outdir dist .
-        # gpg_key: ${{ secrets.PYPI_GPG_KEY }}
         password: ${{ secrets.PYPI_KEY }}
         upload: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
         skip_existing: true
