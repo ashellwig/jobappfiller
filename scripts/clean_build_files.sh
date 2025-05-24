@@ -14,3 +14,30 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+function _pycaches {
+    find . -maxdepth 3 -name "*__pycache__*"
+    echo "./build"
+    echo "./dist"
+    echo "./jobappfiller.egg-info"
+    echo "./.pytest_cache"
+}
+
+typeset -a lines
+_pycaches | IFS=$'\n' read -r -d '' -A lines
+
+new_arr=("${lines[@]:0:$#lines-1}")
+
+arr_sizetwo=${#new_arr[@]}
+
+echo "arr_sizetwo: $arr_sizetwo"
+
+for item in "${new_arr[@]}"; do
+    if [[ -e $item ]]; then
+        echo -e "\033[1;31mRemoving $item\033[0m"
+        rm -rf $item
+        if [[ ! -e $item ]]; then
+            echo -e "\033[1;32m$item Removed.\033[0m"
+        fi
+    fi
+done
