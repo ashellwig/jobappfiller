@@ -113,12 +113,12 @@ def list_jobtitles(resume_data: dict) -> list[str]:
     Returns:
         list[str]: List of job titles for each company in experience.
     """
-    end_dates: list[str] = []
+    jobtitles: list[str] = []
     experience_data = resume_data.get("default")[0]["experience"]
     for i in range(0, len(experience_data)):
-        end_dates.append(experience_data[i]["jobtitle"])
+        jobtitles.append(experience_data[i]["jobtitle"])
 
-    return end_dates
+    return jobtitles
 
 
 def list_descriptions(resume_data: dict) -> list[str]:
