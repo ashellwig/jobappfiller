@@ -7,5 +7,6 @@ pylint==3.3.7
 pyperclip==1.9.0
 pytest==8.3.5
 rich==14.0.0
+tomlkit==0.13.2
 twine==6.1.0
 yapf==0.43.0

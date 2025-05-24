@@ -12,3 +12,12 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+from jobappfiller.tools.resume_data_gen import ResumeDataGen
+
+
+def test_company_list(conf_file):
+    resume_data = ResumeDataGen(conf_file, date_format="yyyy-MM")
+
+    assert resume_data.company_list[0] == "TAKKION (TP&L Management Solutions)"
+    assert resume_data.company_list[1] == "American Express"
