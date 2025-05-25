@@ -1,0 +1,52 @@
+# Copyright (C) 2025 Ash Hellwig <ahellwig.dev@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+name: 🐛 Bug Report
+description: Create a report to help us improve if you have found an issue.
+title: "[Bug]: "
+labels: ["bug", untriaged]
+assignees:
+  - ashellwig
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Create a report to help us improve if you have found an issue!
+  - type: input
+    id: bug-summary
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug
+      placeholder: I tried to < > but < > happened!
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Describe how to reproduce the error.
+      description: Steps taken before the error/bug happened.
+      placeholder: Describe what you did before this happened!
+      value: "An error happened!"
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: What did you expect to happen?
+      description: Desired behavior that did not happen when the bug appeared.
+      placeholder: Describe what you wanted to see before this happened!
+      value: "I expected < >!"
+    validations:
+      required: true
