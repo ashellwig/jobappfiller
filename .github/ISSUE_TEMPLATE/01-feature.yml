@@ -31,8 +31,8 @@ body:
       description: Is your feature request related to a problem?
       multiple: false
       options:
-        - Yes
-        - No
+        - "Yes"
+        - "No"
       default: 1
     validations:
       required: true
