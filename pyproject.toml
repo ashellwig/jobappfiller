@@ -105,6 +105,11 @@ split_all_top_level_comma_separated_values = false
 split_before_dot = true
 split_before_closing_bracket = true
 
+[tool.yapfignore]
+ignore_patterns = [
+    ".ycm_extra_conf.py"
+]
+
 # ---- CONFIGURATION: pylint ----
 [tool.pylint]
 
