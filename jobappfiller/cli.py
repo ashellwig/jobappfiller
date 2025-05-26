@@ -19,6 +19,7 @@ import importlib.metadata
 import click
 
 from jobappfiller.tools.cli import (
+        cli_automated_login,
         cli_print_resume_json,
         cli_print_companies,
         cli_run_gui
@@ -37,6 +38,7 @@ def cli(ctx):  # pylint: disable=W0613
 cli.add_command(cli_print_resume_json, name="print-resume")
 cli.add_command(cli_print_companies, name="print-companies")
 cli.add_command(cli_run_gui, name="gui")
+cli.add_command(cli_automated_login, name="auto-login")
 
 if __name__ == "__main__":
     cli()  # pylint: disable=E1120

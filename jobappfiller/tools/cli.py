@@ -22,6 +22,7 @@ import click
 from rich import print_json
 
 from jobappfiller.tools.app import run_gui
+from jobappfiller.tools.sign_in_to_site import automated
 from jobappfiller.tools.parse_job_config import parse_resume, list_companies
 
 
@@ -58,3 +59,11 @@ def cli_print_companies(file: str):
 )
 def cli_run_gui(file: str, datefmt: str):
     run_gui(resume_config_file=file, date_format=datefmt)
+
+
+@click.command()
+@click.option("--site", envvar=["CAREER_SITE_URL"])
+@click.option("--username", envvar=["CAREER_SITE_USERNAME"])
+@click.option("--password", envvar=["CAREER_SITE_PASSWORD"])
+def cli_automated_login(site: str, username: str, password: str):
+    automated(username=username, password=password, site_url=site)

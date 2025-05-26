@@ -26,6 +26,8 @@
     /* ---- Misc. ---- */
     // Docstrings
     "autoDocstring.docstringFormat": "google",
+    "autoDocstring.quoteStyle": "\"\"\"",
+    "autoDocstring.guessTypes": true,
     // GitHub CoPilot
     "github.copilot.enable": {
         "*": false,
@@ -34,7 +36,7 @@
         "scminput": false,
         "python": false
     },
-    // Licencing
+    // Licensing
     "license.author": "Ash Hellwig <ahellwig.dev@gmail.com> (https://ashhellwig.netlify.app)",
     "license.default": "AGPLv3",
     "license.extension": "",
@@ -43,5 +45,8 @@
     "licenser.license": "AGPLv3",
     "licenser.projectName": "jobappfiller",
     "license.year": "2025",
-    "licenser.useSPDXLicenseFormat": false
+    "licenser.useSPDXLicenseFormat": false,
+    "todo-tree.filtering.includeGlobs": [
+        "jobappfiller/**"
+    ]
 }
