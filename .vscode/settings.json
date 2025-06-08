@@ -23,6 +23,15 @@
         "--style",
         "pyproject.toml"
     ],
+    // Shell
+    "[shellscript]": {
+        "files.eol": "\n",
+        "editor.defaultColorDecorators": "always",
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    //// Formating
+    "shellformat.path": "/home/ahellwig",
     /* ---- Misc. ---- */
     // Docstrings
     "autoDocstring.docstringFormat": "google",
